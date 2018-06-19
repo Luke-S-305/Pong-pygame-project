@@ -1,48 +1,45 @@
 import pygame
-#
+#Importing modules needed
 
-#
+#Defining colours
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (50, 50, 255)
 YELLOW = (255, 255, 0)
 
-#
+#Initilising pygame
 pygame.init()
 
-#
+#Setting the size of the screen
 size = (640, 480)
-
 screen = pygame.display.set_mode(size)
-#
 
-pygame.display.set_caption("Snow")
-#
+#Seting the title of the window
+pygame.display.set_caption("Pong")
+
 
 done = False
-#
-x_val = 150
-y_val = 200
-
+#Setting the positional values of the paddle
 x_padd = 0
 y_padd = 20
+
+#Setting the positional values of the ball
+x_val = 150
+y_val = 200
 
 x_direction = 1
 y_direction = 1
 
 clock = pygame.time.Clock()
 
-###
+###MAIN LOOP
 while not done:
-    #
+    #Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-            
-            
-        #
-    #
-    #
+
+    #Check keypresses
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] and y_padd > 0:
         y_padd = y_padd - 5
@@ -67,14 +64,17 @@ while not done:
         
     x_val = x_val + x_direction
     y_val = y_val + y_direction
-    #
+
+    #Create the black background
     screen.fill(BLACK)
-    #
+
+    #Drawing the paddle and ball
     pygame.draw.rect(screen, BLUE, (x_val, y_val, 20, 20))
     pygame.draw.rect(screen, WHITE, (x_padd, y_padd, 15, 60))
-    #
+    
+    #Flip display
     pygame.display.flip()
-    #
+
+    #Set clock speed
     clock.tick(60)
-    #
 pygame.quit()
