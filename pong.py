@@ -33,6 +33,11 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.x = 615
         self.rect.y = 20
 
+    def moveY(self, dy):
+        #setting the change in Y
+        self.dy = dy
+                
+
     def update(self):
         self.rect.y += self.dy
         self.rect.x += self.dx
@@ -59,8 +64,7 @@ pygame.display.set_caption("Pong")
 done = False
 #Setting the positional values of the paddle
 x_padd = 0
-y_padd = 20
-
+y_padd = 2
 #Setting the positional values of the ball
 x_val = 150
 y_val = 200
@@ -81,10 +85,16 @@ while not done:
 
     #Check keypresses
     keys = pygame.key.get_pressed()
+    keyPressed = 0 #keyPressed checks if a key has been pressed
     if keys[pygame.K_UP] and y_padd > 0:
-        y_padd = y_padd - 5
+        player1.moveY(-5)
+        keyPressed = 1
     if keys[pygame.K_DOWN] and y_padd < 420:
-        y_padd = y_padd + 5
+        player1.moveY(5)
+        keyPressed = 1
+    if keyPressed == 0:
+        #If no keys have been pressed
+        player1.moveY(0)
 
     #Ball physics
     if x_val > 620:
@@ -107,7 +117,7 @@ while not done:
     y_val = y_val + y_direction
     
     #Update sprites
-    all_sprites_group.update
+    all_sprites_group.update()
     
     #Create the black background
     screen.fill(BLACK)
