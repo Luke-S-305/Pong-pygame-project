@@ -62,9 +62,6 @@ pygame.display.set_caption("Pong")
 
 
 done = False
-#Setting the positional values of the paddle
-x_padd = 0
-y_padd = 2
 #Setting the positional values of the ball
 x_val = 150
 y_val = 200
@@ -86,10 +83,10 @@ while not done:
     #Check keypresses
     keys = pygame.key.get_pressed()
     keyPressed = 0 #keyPressed checks if a key has been pressed
-    if keys[pygame.K_UP] and y_padd > 0:
+    if keys[pygame.K_UP] and player1.rect.y > 0:
         player1.moveY(-5)
         keyPressed = 1
-    if keys[pygame.K_DOWN] and y_padd < 420:
+    if keys[pygame.K_DOWN] and player1.rect.y < 420:
         player1.moveY(5)
         keyPressed = 1
     if keyPressed == 0:
@@ -109,8 +106,8 @@ while not done:
     if y_val < 0 or y_val > 460:
         y_direction = y_direction * -1
 
-    #collision with paddle
-    if x_val < 15 and y_val > y_padd and y_val < y_padd + 60:
+    #collision with player1
+    if x_val < player1.rect.x + 15 and y_val > player1.rect.y and y_val < player1.rect.y + 60:
         x_direction = 1
         
     x_val = x_val + x_direction
