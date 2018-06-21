@@ -42,6 +42,17 @@ class Paddle(pygame.sprite.Sprite):
         self.rect.y += self.dy
         self.rect.x += self.dx
 
+class Ball(pygame.sprite.Sprite):
+    def __init__(self, ballType):
+        super().__init__()
+        #Deciding what type of ball it should be
+        if ballType = normal:
+            self.width = 20
+            self.height = 20
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(WHITE)
+            self.rect = self.image.get_rect()
+    
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()

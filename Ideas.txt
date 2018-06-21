@@ -1,0 +1,12 @@
+Ideas for powerups:
+
+Time slow (enemy player or ball or something)
+Larger paddle/smaller paddle
+Creating a wall
+
+Ideas for ball:
+
+Larger ball
+Ball that makes you lose a point when it hits you
+Faster ball
+Lots of smaller balls
