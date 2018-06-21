@@ -10,6 +10,44 @@ YELLOW = (255, 255, 0)
 #Initilising pygame
 pygame.init()
 
+#Adding classes
+class Paddle(pygame.sprite.Sprite):
+    def __init__(self, color, playerNum):
+        super().__init__()
+        #Adding a speed attribute for power-ups
+        self.speed = 1
+        #Adding an attribute for change in x/y
+        self.dx = 0
+        self.dy = 0
+        #Creating the paddle
+        self.width = 15
+        self.height = 60
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        #Placing the paddle on the screen depending on which player it is
+        #NOTE: change the coordinates to be relative to the screen size
+        if playerNum == 1:
+            self.rect.x = 10
+        elif playerNum == 2:
+            self.rect.x = 615
+        self.rect.y = 20
+
+    def update(self):
+        self.rect.y += self.dy
+        self.rect.x += self.dx
+
+#Creating the groups
+all_sprites_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
+
+#Creating the players
+player1 = Paddle(WHITE, 1)
+
+#Adding the classes to groups
+all_sprites_group.add(player1)
+player_group.add(player1)
+
 #Setting the size of the screen
 size = (640, 480)
 screen = pygame.display.set_mode(size)
@@ -30,6 +68,8 @@ y_val = 200
 x_direction = 1
 y_direction = 1
 
+
+
 clock = pygame.time.Clock()
 
 ###MAIN LOOP
@@ -45,7 +85,8 @@ while not done:
         y_padd = y_padd - 5
     if keys[pygame.K_DOWN] and y_padd < 420:
         y_padd = y_padd + 5
-    
+
+    #Ball physics
     if x_val > 620:
         x_direction = -1
 
@@ -64,13 +105,16 @@ while not done:
         
     x_val = x_val + x_direction
     y_val = y_val + y_direction
-
+    
+    #Update sprites
+    all_sprites_group.update
+    
     #Create the black background
     screen.fill(BLACK)
 
-    #Drawing the paddle and ball
-    pygame.draw.rect(screen, BLUE, (x_val, y_val, 20, 20))
-    pygame.draw.rect(screen, WHITE, (x_padd, y_padd, 15, 60))
+    #Drawing the sprites
+    pygame.draw.rect(screen, WHITE, (x_val, y_val, 20, 20))
+    all_sprites_group.draw(screen)
     
     #Flip display
     pygame.display.flip()
