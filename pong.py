@@ -46,23 +46,54 @@ class Ball(pygame.sprite.Sprite):
     def __init__(self, ballType):
         super().__init__()
         #Deciding what type of ball it should be
-        if ballType = normal:
+        if ballType == "normal":
             self.width = 20
             self.height = 20
+            self.speed = 1
+            self.x_direction = 1
+            self.y_direction = 1
             self.image = pygame.Surface([self.width, self.height])
             self.image.fill(WHITE)
             self.rect = self.image.get_rect()
+            self.rect.x = 200
+            self.rect.y = 200
+
+    def update(self):
+        #Ball physics
+        if self.rect.x > 620:
+            self.x_direction = -1
+
+        if self.rect.x < 0:
+            self.rect.x = 150
+            self.rect.y = 200
+            self.x_direction = 1
+            self.y_direction = 1
+            
+        if self.rect.y < 0 or self.rect.y > 460:
+            self.y_direction = self.y_direction * -1
+
+        #collision with player1
+        if self.rect.x < player1.rect.x + 15 and self.rect.y > player1.rect.y and self.rect.y < player1.rect.y + 60:
+            self.x_direction = 1
+            
+        self.rect.x += self.speed * self.x_direction
+        self.rect.y += self.speed * self.y_direction
+                
     
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
+ball_group = pygame.sprite.Group()
 
 #Creating the players
 player1 = Paddle(WHITE, 1)
+mainBall = Ball("normal")
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
 player_group.add(player1)
+all_sprites_group.add(mainBall)
+ball_group.add(mainBall)
 
 #Setting the size of the screen
 size = (640, 480)
@@ -73,15 +104,6 @@ pygame.display.set_caption("Pong")
 
 
 done = False
-#Setting the positional values of the ball
-x_val = 150
-y_val = 200
-
-x_direction = 1
-y_direction = 1
-
-
-
 clock = pygame.time.Clock()
 
 ###MAIN LOOP
@@ -104,26 +126,7 @@ while not done:
         #If no keys have been pressed
         player1.moveY(0)
 
-    #Ball physics
-    if x_val > 620:
-        x_direction = -1
 
-    if x_val < 0:
-        x_val = 150
-        y_val = 200
-        x_direction = 1
-        y_direction = 1
-        
-    if y_val < 0 or y_val > 460:
-        y_direction = y_direction * -1
-
-    #collision with player1
-    if x_val < player1.rect.x + 15 and y_val > player1.rect.y and y_val < player1.rect.y + 60:
-        x_direction = 1
-        
-    x_val = x_val + x_direction
-    y_val = y_val + y_direction
-    
     #Update sprites
     all_sprites_group.update()
     
@@ -131,7 +134,6 @@ while not done:
     screen.fill(BLACK)
 
     #Drawing the sprites
-    pygame.draw.rect(screen, WHITE, (x_val, y_val, 20, 20))
     all_sprites_group.draw(screen)
     
     #Flip display
