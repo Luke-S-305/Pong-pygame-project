@@ -71,10 +71,6 @@ class Ball(pygame.sprite.Sprite):
             
         if self.rect.y < 0 or self.rect.y > 460:
             self.y_direction = self.y_direction * -1
-
-        #collision with player1
-        if self.rect.x < player1.rect.x + 15 and self.rect.y > player1.rect.y and self.rect.y < player1.rect.y + 60:
-            self.x_direction = 1
             
         self.rect.x += self.speed * self.x_direction
         self.rect.y += self.speed * self.y_direction
@@ -125,8 +121,13 @@ while not done:
     if keyPressed == 0:
         #If no keys have been pressed
         player1.moveY(0)
-
-
+        
+    #Collision checking
+    for player1 in player_group:
+        ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
+        for mainBall in ball_hit_group:
+            mainBall.x_direction = 1
+    
     #Update sprites
     all_sprites_group.update()
     
