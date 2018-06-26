@@ -1,5 +1,6 @@
-import pygame
 #Importing modules needed
+import pygame
+import random
 
 #Defining colours
 BLACK = (0, 0, 0)
@@ -83,11 +84,15 @@ ball_group = pygame.sprite.Group()
 
 #Creating the players
 player1 = Paddle(WHITE, 1)
+player2 = Paddle(WHITE, 2)
 mainBall = Ball("normal")
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
 player_group.add(player1)
+
+all_sprites_group.add(player2)
+player_group.add(player2)
 all_sprites_group.add(mainBall)
 ball_group.add(mainBall)
 
@@ -124,7 +129,9 @@ while not done:
         
     #Collision checking
     for player1 in player_group:
+        #Create completely new hit group for each player
         ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
+        #For each "main ball" hit, direction change
         for mainBall in ball_hit_group:
             mainBall.x_direction = 1
     
