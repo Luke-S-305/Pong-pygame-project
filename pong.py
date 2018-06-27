@@ -92,7 +92,8 @@ all_sprites_group.add(player1)
 player_group.add(player1)
 
 all_sprites_group.add(player2)
-player_group.add(player2)
+#player_group.add(player2) ---Movement is lost when this line is added
+
 all_sprites_group.add(mainBall)
 ball_group.add(mainBall)
 
@@ -116,24 +117,38 @@ while not done:
 
     #Check keypresses
     keys = pygame.key.get_pressed()
-    keyPressed = 0 #keyPressed checks if a key has been pressed
-    if keys[pygame.K_UP] and player1.rect.y > 0:
+    plr1KeyPressed = 0 #Checks if a key has been pressed by player 1
+    if keys[pygame.K_w] and player1.rect.y > 0:
         player1.moveY(-5)
-        keyPressed = 1
-    if keys[pygame.K_DOWN] and player1.rect.y < 420:
+        plr1KeyPressed = 1
+    if keys[pygame.K_s] and player1.rect.y < 420:
         player1.moveY(5)
-        keyPressed = 1
-    if keyPressed == 0:
+        plr1KeyPressed = 1
+    if plr1KeyPressed == 0:
         #If no keys have been pressed
         player1.moveY(0)
-        
+
+    plr2KeyPressed = 0 #Checks if a key has been pressed by player 1
+    if keys[pygame.K_UP] and player2.rect.y > 0:
+        player2.moveY(-5)
+        plr2KeyPressed = 1
+    if keys[pygame.K_DOWN] and player2.rect.y < 420:
+        player2.moveY(5)
+        plr2KeyPressed = 1
+    if plr2KeyPressed == 0:
+        #If no keys have been pressed
+        player2.moveY(0)
+
     #Collision checking
-    for player1 in player_group:
-        #Create completely new hit group for each player
-        ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
-        #For each "main ball" hit, direction change
-        for mainBall in ball_hit_group:
-            mainBall.x_direction = 1
+    player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
+    #For each "main ball" hit, direction change
+    for mainBall in player1_ball_hit_group:
+        mainBall.x_direction = mainBall.x_direction * -1
+
+    player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
+    #For each "main ball" hit, direction change
+    for mainBall in player2_ball_hit_group:
+        mainBall.x_direction = mainBall.x_direction * -1
     
     #Update sprites
     all_sprites_group.update()
