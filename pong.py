@@ -65,16 +65,20 @@ class Ball(pygame.sprite.Sprite):
             self.x_direction = -1
 
         if self.rect.x < 0:
-            self.rect.x = 150
-            self.rect.y = 200
-            self.x_direction = 1
-            self.y_direction = 1
+            self.reset()
             
         if self.rect.y < 0 or self.rect.y > 460:
             self.y_direction = self.y_direction * -1
             
         self.rect.x += self.speed * self.x_direction
         self.rect.y += self.speed * self.y_direction
+
+    def reset(self):
+        #Put the ball back in the middle of the screen
+        self.rect.x = 150
+        self.rect.y = 200
+        self.x_direction = 1
+        self.y_direction = 1
                 
     
 #Creating the groups
