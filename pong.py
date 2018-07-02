@@ -1,6 +1,7 @@
 #Importing modules needed
 import pygame
 import random
+import math
 
 #Defining colours
 BLACK = (0, 0, 0)
@@ -50,7 +51,8 @@ class Ball(pygame.sprite.Sprite):
         if ballType == "normal":
             self.width = 20
             self.height = 20
-            self.speed = 1
+            self.angle = math.radians(45)
+            self.speed = 2
             self.x_direction = 1
             self.y_direction = 1
             self.image = pygame.Surface([self.width, self.height])
@@ -62,16 +64,17 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         #Ball physics
         if self.rect.x > 620:
-            self.x_direction = -1
+            self.reset()
 
         if self.rect.x < 0:
             self.reset()
             
         if self.rect.y < 0 or self.rect.y > 460:
             self.y_direction = self.y_direction * -1
-            
-        self.rect.x += self.speed * self.x_direction
-        self.rect.y += self.speed * self.y_direction
+
+        self.getComponents()
+        self.rect.x += self.dx
+        self.rect.y += self.dy
 
     def reset(self):
         #Put the ball back in the middle of the screen
@@ -79,7 +82,13 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = 200
         self.x_direction = 1
         self.y_direction = 1
-                
+
+    def getComponents(self):
+        #Set dy and dx based off angle generated with trigonometry
+        self.dx = self.speed * math.cos(self.angle) * self.x_direction
+        print(self.dx)
+        self.dy = self.speed * math.sin(self.angle) * self.y_direction
+        print(self.dy)     
     
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
