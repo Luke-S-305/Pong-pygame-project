@@ -51,8 +51,8 @@ class Ball(pygame.sprite.Sprite):
         if ballType == "normal":
             self.width = 20
             self.height = 20
-            self.angle = math.radians(45)
-            self.speed = 2
+            self.angle = math.pi * 0.14
+            self.speed = 4
             self.x_direction = 1
             self.y_direction = 1
             self.image = pygame.Surface([self.width, self.height])
@@ -86,9 +86,11 @@ class Ball(pygame.sprite.Sprite):
     def getComponents(self):
         #Set dy and dx based off angle generated with trigonometry
         self.dx = self.speed * math.cos(self.angle) * self.x_direction
-        print(self.dx)
+        print(math.cos(self.angle))
+        #print("dx: " + str(self.dx))
         self.dy = self.speed * math.sin(self.angle) * self.y_direction
-        print(self.dy)     
+        print(math.sin(self.angle))
+        #print("dy: " + str(self.dy))     
     
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
@@ -174,6 +176,11 @@ while not done:
     
     #Flip display
     pygame.display.flip()
+    
+    #Test values
+##    print(math.radians(45))
+##    print(math.cos(math.radians(45)))
+##    print(math.sin(math.radians(45)))
 
     #Set clock speed
     clock.tick(60)
