@@ -158,12 +158,12 @@ while not done:
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
     #For each "main ball" hit, direction change
     for mainBall in player1_ball_hit_group:
-        mainBall.x_direction = mainBall.x_direction * -1
+        mainBall.x_direction = 1
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
     #For each "main ball" hit, direction change
     for mainBall in player2_ball_hit_group:
-        mainBall.x_direction = mainBall.x_direction * -1
+        mainBall.x_direction =  -1
     
     #Update sprites
     all_sprites_group.update()
