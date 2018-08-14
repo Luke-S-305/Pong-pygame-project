@@ -10,6 +10,8 @@ YELLOW = (255, 255, 0)
 
 #Initilising pygame
 pygame.init()
+#Initialize text module
+pygame.font.init() 
 
 #Adding classes
 class Paddle(pygame.sprite.Sprite):
@@ -62,10 +64,12 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         #Ball physics
         if self.rect.x > 620:
-            self.x_direction = -1
+            self.reset()
+            scored("player1")
 
         if self.rect.x < 0:
             self.reset()
+            scored("player2")
             
         if self.rect.y < 0 or self.rect.y > 460:
             self.y_direction = self.y_direction * -1
@@ -102,12 +106,29 @@ all_sprites_group.add(mainBall)
 ball_group.add(mainBall)
 
 #Setting the size of the screen
-size = (640, 480)
+screenWidth = 640
+screenHeight = 480
+size = (screenWidth, screenHeight)
 screen = pygame.display.set_mode(size)
 
 #Seting the title of the window
 pygame.display.set_caption("Pong")
 
+#define variables
+player1Score = 0
+player2Score = 0
+
+
+#define functions
+def scored(player):
+    if player == "player1":
+        print("player 1 scored!")
+        global player1Score
+        player1Score += 1
+    if player == "player2":
+        print("player 2 scored!")
+        global player2Score
+        player2Score += 1
 
 done = False
 clock = pygame.time.Clock()
@@ -132,7 +153,7 @@ while not done:
         #If no keys have been pressed
         player1.moveY(0)
 
-    plr2KeyPressed = 0 #Checks if a key has been pressed by player 1
+    plr2KeyPressed = 0 #Checks if a key has been pressed by player 2
     if keys[pygame.K_UP] and player2.rect.y > 0:
         player2.moveY(-5)
         plr2KeyPressed = 1
@@ -162,6 +183,11 @@ while not done:
 
     #Drawing the sprites
     all_sprites_group.draw(screen)
+
+    #Drawing text
+    myfont = pygame.font.SysFont("Comic Sans MS", 50)
+    textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
+    screen.blit(textsurface,(270,10))
     
     #Flip display
     pygame.display.flip()
@@ -169,3 +195,4 @@ while not done:
     #Set clock speed
     clock.tick(60)
 pygame.quit()
+
