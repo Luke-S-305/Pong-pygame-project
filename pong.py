@@ -91,6 +91,8 @@ class PowerUp(pygame.sprite.Sprite):
         self.width = 30
         self.height = 30
         self.direction = 0
+        #determine the state that the powerup is in
+        self.state = "not hit"
         #deciding which power up it should be
         if powerUpType == "increase size":
             self.image = pygame.Surface([self.width, self.height])
@@ -101,8 +103,18 @@ class PowerUp(pygame.sprite.Sprite):
         self.rect.x = 300
         self.rect.y = 300
 
-        def hit(self, direction):
-            self.direction = direction
+    def hit(self, direction):
+        self.direction = direction
+        self.state = "hit"
+
+        #Change the look of the powerup once it has been hit
+        self.height = 10
+        self.width = 20
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(BLUE)
+        
+    def update(self):
+        self.rect.x += self.direction * 2
             
     
 #Creating the groups
@@ -114,8 +126,8 @@ powerUp_group = pygame.sprite.Group()
 #Creating the players
 player1 = Paddle(WHITE, 1)
 player2 = Paddle(WHITE, 2)
-mainBall = Ball("normal")
-my_powerUp = PowerUp("increase size")
+ball = Ball("normal")
+powerUp = PowerUp("increase size")
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -124,11 +136,11 @@ player_group.add(player1)
 all_sprites_group.add(player2)
 #player_group.add(player2) ---Movement is lost when this line is added
 
-all_sprites_group.add(mainBall)
-ball_group.add(mainBall)
+all_sprites_group.add(ball)
+ball_group.add(ball)
 
-all_sprites_group.add(my_powerUp)
-powerUp_group.add(my_powerUp)
+all_sprites_group.add(powerUp)
+powerUp_group.add(powerUp)
 
 #Setting the size of the screen
 screenWidth = 640
@@ -192,23 +204,32 @@ while not done:
     #Collision checking
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
     #For each "main ball" hit, direction change
-    for mainBall in player1_ball_hit_group:
-        mainBall.x_direction = mainBall.x_direction * -1
+    for ball in player1_ball_hit_group:
+        ball.x_direction = ball.x_direction * -1
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
     #For each "main ball" hit, direction change
-    for mainBall in player2_ball_hit_group:
-        mainBall.x_direction = mainBall.x_direction * -1
+    for ball in player2_ball_hit_group:
+        ball.x_direction = ball.x_direction * -1
 
     #When a ball hits the powerup
     #Go through all powerups in the powerup group one by one
     for x in powerUp_group:
         #Now that one powerup has been isolated, create another group for that single powerup
-        my_powerUp_hit_group = pygame.sprite.spritecollide(my_powerUp, ball_group, False)
+        powerUp_hit_group = pygame.sprite.spritecollide(powerUp, ball_group, False)
         #Now going through the newly created group to isolate each ball that has collided with that single powerup
-        for y in my_powerUp_hit_group:
-            print("collision occured")
+        for y in powerUp_hit_group:
+            #Find the direction the ball is travelling in
+            direction = ball.x_direction
+            #Reverse the direction (so the power up travels back from where the ball is coming from)
+            direction = direction * -1
+            powerUp.hit(direction)
+    
+    ###IF THERE ARE PROBLEMS WITH THE POWERUP COLLIDING WITH THE PADDLE, LOOK AT THE HIT FUNCTION IN THE POWERUP CLASS,
+    ###SOME PARTS OF THE INITIALIZATION OF THE RECTANGLE WERE LEFT OUT WHEN THE DIMENSIONS OF THE POWERUP WERE CHANGED.
 
+
+    
     #Update sprites
     all_sprites_group.update()
     

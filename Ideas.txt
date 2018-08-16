@@ -10,3 +10,6 @@ Larger ball
 Ball that makes you lose a point when it hits you
 Faster ball
 Lots of smaller balls
+
+Ideas for AI:
+Checks where the ball is as soon as the other player hits it. It then moves to that point and stays around there until the ball bounces off one of the walls where it then recalculates. This can be done by the AI checking when the x/y direction of the ball changes.
