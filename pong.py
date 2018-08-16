@@ -90,6 +90,7 @@ class PowerUp(pygame.sprite.Sprite):
         #defining base characteristics which are the same for all power ups
         self.width = 30
         self.height = 30
+        self.direction = 0
         #deciding which power up it should be
         if powerUpType == "increase size":
             self.image = pygame.Surface([self.width, self.height])
@@ -99,6 +100,9 @@ class PowerUp(pygame.sprite.Sprite):
         #position is defined after the sprite has been determined
         self.rect.x = 300
         self.rect.y = 300
+
+        def hit(self, direction):
+            self.direction = direction
             
     
 #Creating the groups
@@ -197,11 +201,14 @@ while not done:
         mainBall.x_direction = mainBall.x_direction * -1
 
     #When a ball hits the powerup
-    ###This needs to be replaced with the alternate collison code to allow for more flexibility when editing
-    my_powerUp_hit_group = pygame.sprite.spritecollide(my_powerUp, ball_group, False)
-    for mainBall in my_powerUp_hit_group:
-        print("collision occured")
-    
+    #Go through all powerups in the powerup group one by one
+    for x in powerUp_group:
+        #Now that one powerup has been isolated, create another group for that single powerup
+        my_powerUp_hit_group = pygame.sprite.spritecollide(my_powerUp, ball_group, False)
+        #Now going through the newly created group to isolate each ball that has collided with that single powerup
+        for y in my_powerUp_hit_group:
+            print("collision occured")
+
     #Update sprites
     all_sprites_group.update()
     
