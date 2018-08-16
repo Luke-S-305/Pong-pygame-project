@@ -83,17 +83,35 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = 200
         self.x_direction = 1
         self.y_direction = 1
-                
+
+class PowerUp(pygame.sprite.Sprite):
+    def __init__(self, powerUpType):
+        super().__init__()
+        #defining base characteristics which are the same for all power ups
+        self.width = 30
+        self.height = 30
+        #deciding which power up it should be
+        if powerUpType == "increase size":
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(BLUE)
+            self.rect = self.image.get_rect()
+
+        #position is defined after the sprite has been determined
+        self.rect.x = 300
+        self.rect.y = 300
+            
     
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 ball_group = pygame.sprite.Group()
+powerUp_group = pygame.sprite.Group()
 
 #Creating the players
 player1 = Paddle(WHITE, 1)
 player2 = Paddle(WHITE, 2)
 mainBall = Ball("normal")
+my_powerUp = PowerUp("increase size")
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -104,6 +122,9 @@ all_sprites_group.add(player2)
 
 all_sprites_group.add(mainBall)
 ball_group.add(mainBall)
+
+all_sprites_group.add(my_powerUp)
+powerUp_group.add(my_powerUp)
 
 #Setting the size of the screen
 screenWidth = 640
@@ -174,6 +195,12 @@ while not done:
     #For each "main ball" hit, direction change
     for mainBall in player2_ball_hit_group:
         mainBall.x_direction = mainBall.x_direction * -1
+
+    #When a ball hits the powerup
+    ###This needs to be replaced with the alternate collison code to allow for more flexibility when editing
+    my_powerUp_hit_group = pygame.sprite.spritecollide(my_powerUp, ball_group, False)
+    for mainBall in my_powerUp_hit_group:
+        print("collision occured")
     
     #Update sprites
     all_sprites_group.update()
