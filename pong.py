@@ -91,6 +91,7 @@ class PowerUp(pygame.sprite.Sprite):
         self.width = 30
         self.height = 30
         self.direction = 0
+        self.powerUpType = powerUpType
         #determine the state that the powerup is in
         self.state = "not hit"
         #deciding which power up it should be
@@ -101,7 +102,7 @@ class PowerUp(pygame.sprite.Sprite):
 
         #position is defined after the sprite has been determined
         self.rect.x = 300
-        self.rect.y = 300
+        self.rect.y = 50
 
     def hit(self, direction):
         self.direction = direction
@@ -224,10 +225,26 @@ while not done:
             #Reverse the direction (so the power up travels back from where the ball is coming from)
             direction = direction * -1
             powerUp.hit(direction)
-    
-    ###IF THERE ARE PROBLEMS WITH THE POWERUP COLLIDING WITH THE PADDLE, LOOK AT THE HIT FUNCTION IN THE POWERUP CLASS,
-    ###SOME PARTS OF THE INITIALIZATION OF THE RECTANGLE WERE LEFT OUT WHEN THE DIMENSIONS OF THE POWERUP WERE CHANGED.
 
+    #Collision checking between powerups FOR PLAYER 1 (see collisions code comments above for more detail)
+    for x in player_group:
+        #Isolate each player
+        player_hit_group = pygame.sprite.spritecollide(player1, powerUp_group, False)
+        #Go through powerup collisions induvidually
+        for y in player_hit_group:
+            #Find what type of powerup it is
+            powerType = powerUp.powerUpType
+            print(powerType)
+
+    #Collision checking between powerups FOR PLAYER 2
+    for x in player_group:
+        #Isolate each player
+        player_hit_group = pygame.sprite.spritecollide(player2, powerUp_group, False)
+        #Go through powerup collisions induvidually
+        for y in player_hit_group:
+            #Find what type of powerup it is
+            powerType = powerUp.powerUpType
+            print(powerType)
 
     
     #Update sprites
