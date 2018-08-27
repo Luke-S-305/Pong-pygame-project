@@ -1,6 +1,8 @@
 #Importing modules needed
 import pygame
 import random
+import math
+import decimal
 
 #Defining colours
 BLACK = (0, 0, 0)
@@ -62,6 +64,7 @@ class Ball(pygame.sprite.Sprite):
             self.width = 20
             self.height = 20
             self.speed = 1
+            self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
             self.x_direction = 1
             self.y_direction = 1
             self.image = pygame.Surface([self.width, self.height])
@@ -83,13 +86,27 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.y < 0 or self.rect.y > 460:
             self.y_direction = self.y_direction * -1
             
-        self.rect.x += self.speed * self.x_direction
-        self.rect.y += self.speed * self.y_direction
+##        self.rect.x += self.speed * self.x_direction
+##        self.rect.y += self.speed * self.y_direction
+
+        self.getComponents()
+        print(self.dx)
+        print(self.dy)
+        self.rect.x += self.dx
+        self.rect.y += self.dy
+
+    def getComponents(self):
+        #Set dy and dx based off angle generated with trigonometry
+        self.dx = self.speed * math.cos(self.angle) * self.x_direction
+        #print(math.cos(self.angle))
+        self.dy = self.speed * math.sin(self.angle) * self.y_direction
+        #print(math.sin(self.angle))  
 
     def reset(self):
         #Put the ball back in the middle of the screen
         self.rect.x = 150
         self.rect.y = 200
+        self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
         self.x_direction = 1
         self.y_direction = 1
 
