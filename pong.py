@@ -39,6 +39,15 @@ class Paddle(pygame.sprite.Sprite):
     def moveY(self, dy):
         #setting the change in Y
         self.dy = dy
+
+    def returnDy(self):
+        #a function to return what direction and what speed the paddle is moving at
+        return self.dy
+
+    def poweringUp(self, powerType):
+        if powerType == "increase size":
+            print("working")
+            
                 
 
     def update(self):
@@ -207,11 +216,13 @@ while not done:
     #For each "main ball" hit, direction change
     for ball in player1_ball_hit_group:
         ball.x_direction = ball.x_direction * -1
+        print(player1.returnDy())
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
     #For each "main ball" hit, direction change
     for ball in player2_ball_hit_group:
         ball.x_direction = ball.x_direction * -1
+        print(player2.returnDy())
 
     #When a ball hits the powerup
     #Go through all powerups in the powerup group one by one
@@ -234,7 +245,7 @@ while not done:
         for y in player_hit_group:
             #Find what type of powerup it is
             powerType = powerUp.powerUpType
-            print(powerType)
+            player1.poweringUp(powerType)
 
     #Collision checking between powerups FOR PLAYER 2
     for x in player_group:
@@ -244,7 +255,7 @@ while not done:
         for y in player_hit_group:
             #Find what type of powerup it is
             powerType = powerUp.powerUpType
-            print(powerType)
+            player2.poweringUp(powerType)
 
     
     #Update sprites
