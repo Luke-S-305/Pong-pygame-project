@@ -63,7 +63,7 @@ class Ball(pygame.sprite.Sprite):
         if ballType == "normal":
             self.width = 20
             self.height = 20
-            self.speed = 1
+            self.speed = 4
             self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
             self.x_direction = 1
             self.y_direction = 1
