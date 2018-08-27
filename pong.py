@@ -64,15 +64,11 @@ class Ball(pygame.sprite.Sprite):
             self.width = 20
             self.height = 20
             self.speed = 4
-            self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
-            self.x_direction = 1
-            self.y_direction = 1
             self.image = pygame.Surface([self.width, self.height])
             self.image.fill(WHITE)
             self.rect = self.image.get_rect()
-            self.rect.x = 200
-            self.rect.y = 200
-
+            self.reset()
+            
     def update(self):
         #Ball physics
         if self.rect.x > 620:
@@ -104,11 +100,11 @@ class Ball(pygame.sprite.Sprite):
 
     def reset(self):
         #Put the ball back in the middle of the screen
-        self.rect.x = 150
-        self.rect.y = 200
+        self.rect.x = 320
+        self.rect.y = 240
         self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
-        self.x_direction = 1
-        self.y_direction = 1
+        self.x_direction = random.choice([-1, 1])
+        self.y_direction = random.choice([-1, 1])
 
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, powerUpType):
@@ -232,13 +228,13 @@ while not done:
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
     #For each "main ball" hit, direction change
     for ball in player1_ball_hit_group:
-        ball.x_direction = ball.x_direction * -1
+        ball.x_direction = 1
         print(player1.returnDy())
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
     #For each "main ball" hit, direction change
     for ball in player2_ball_hit_group:
-        ball.x_direction = ball.x_direction * -1
+        ball.x_direction = -1
         print(player2.returnDy())
 
     #When a ball hits the powerup
