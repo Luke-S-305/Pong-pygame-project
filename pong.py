@@ -137,7 +137,7 @@ class PowerUp(pygame.sprite.Sprite):
         self.image.fill(BLUE)
         
     def update(self):
-        self.rect.x += self.direction * 2
+        self.rect.x += self.direction * 4
             
     
 #Creating the groups
@@ -204,10 +204,10 @@ while not done:
     keys = pygame.key.get_pressed()
     plr1KeyPressed = 0 #Checks if a key has been pressed by player 1
     if keys[pygame.K_w] and player1.rect.y > 0:
-        player1.moveY(-5)
+        player1.moveY(-10)
         plr1KeyPressed = 1
     if keys[pygame.K_s] and player1.rect.y < 420:
-        player1.moveY(5)
+        player1.moveY(10)
         plr1KeyPressed = 1
     if plr1KeyPressed == 0:
         #If no keys have been pressed
@@ -215,10 +215,10 @@ while not done:
 
     plr2KeyPressed = 0 #Checks if a key has been pressed by player 2
     if keys[pygame.K_UP] and player2.rect.y > 0:
-        player2.moveY(-5)
+        player2.moveY(-10)
         plr2KeyPressed = 1
     if keys[pygame.K_DOWN] and player2.rect.y < 420:
-        player2.moveY(5)
+        player2.moveY(10)
         plr2KeyPressed = 1
     if plr2KeyPressed == 0:
         #If no keys have been pressed
@@ -289,6 +289,6 @@ while not done:
     pygame.display.flip()
 
     #Set clock speed
-    clock.tick(60)
+    clock.tick(30)
 pygame.quit()
 
