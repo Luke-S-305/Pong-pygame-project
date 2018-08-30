@@ -86,8 +86,8 @@ class Ball(pygame.sprite.Sprite):
 ##        self.rect.y += self.speed * self.y_direction
 
         self.getComponents()
-        print(self.dx)
-        print(self.dy)
+        #print(self.dx)
+        #print(self.dy)
         self.rect.x += self.dx
         self.rect.y += self.dy
 
@@ -96,7 +96,26 @@ class Ball(pygame.sprite.Sprite):
         self.dx = self.speed * math.cos(self.angle) * self.x_direction
         #print(math.cos(self.angle))
         self.dy = self.speed * math.sin(self.angle) * self.y_direction
-        #print(math.sin(self.angle))  
+        #print(math.sin(self.angle))
+
+    def changeAngle(self, movement):
+        if movement < 0:
+            #change angle here
+            if self.y_direction == -1:
+                self.angle += 10
+            if self.y_direction == 1:
+                self.angle += -10
+            #need code for if the ball is going straight
+                
+        if movement > 0:
+            #change angle here
+            if self.y_direction == -1:
+                self.angle += -10
+            if self.y_direction == 1:
+                self.angle += 10
+            #need code for if the ball is going straight
+
+        #do nothing if movement is 0
 
     def reset(self):
         #Put the ball back in the middle of the screen
@@ -229,13 +248,19 @@ while not done:
     #For each "main ball" hit, direction change
     for ball in player1_ball_hit_group:
         ball.x_direction = 1
-        print(player1.returnDy())
+        #find and store what direction player 1 is moving
+        playerMovement = player1.returnDy()
+        ball.changeAngle(playerMovement)
+
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
     #For each "main ball" hit, direction change
     for ball in player2_ball_hit_group:
         ball.x_direction = -1
-        print(player2.returnDy())
+        #find and store what direction player 2 is moving
+        playerMovement = player2.returnDy()
+        ball.changeAngle(playerMovement)
+
 
     #When a ball hits the powerup
     #Go through all powerups in the powerup group one by one
