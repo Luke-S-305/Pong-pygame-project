@@ -2,6 +2,7 @@
 import pygame
 import random
 import math
+import decimal
 
 #Defining colours
 BLACK = (0, 0, 0)
@@ -51,7 +52,7 @@ class Ball(pygame.sprite.Sprite):
         if ballType == "normal":
             self.width = 20
             self.height = 20
-            self.angle = math.pi * 0.14
+            self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
             self.speed = 4
             self.x_direction = 1
             self.y_direction = 1
@@ -82,15 +83,14 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = 200
         self.x_direction = 1
         self.y_direction = 1
+        self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
 
     def getComponents(self):
         #Set dy and dx based off angle generated with trigonometry
         self.dx = self.speed * math.cos(self.angle) * self.x_direction
         print(math.cos(self.angle))
-        #print("dx: " + str(self.dx))
         self.dy = self.speed * math.sin(self.angle) * self.y_direction
-        print(math.sin(self.angle))
-        #print("dy: " + str(self.dy))     
+        print(math.sin(self.angle))   
     
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
