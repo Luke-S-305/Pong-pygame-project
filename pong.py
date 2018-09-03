@@ -10,6 +10,10 @@ WHITE = (255, 255, 255)
 BLUE = (50, 50, 255)
 YELLOW = (255, 255, 0)
 
+#defining some variables before classes
+global timer
+timer = 0
+
 #Initilising pygame
 pygame.init()
 #Initialize text module
@@ -48,9 +52,13 @@ class Paddle(pygame.sprite.Sprite):
 
     def poweringUp(self, powerType):
         if powerType == "increase size":
-            print("working")
-            
-                
+            global timer
+            self.startTimer = timer
+            print(self.startTimer)
+            self.height = 90
+            self.width = 15
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(WHITE)
 
     def update(self):
         self.rect.y += self.dy
@@ -63,14 +71,12 @@ class Ball(pygame.sprite.Sprite):
         if ballType == "normal":
             self.width = 20
             self.height = 20
-<<<<<<< HEAD
             self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
             self.speed = 4
             self.x_direction = 1
             self.y_direction = 1
-=======
+
             self.speed = 4
->>>>>>> 107865c05856c19394792ef2c332e9f5e7d7a6c8
             self.image = pygame.Surface([self.width, self.height])
             self.image.fill(WHITE)
             self.rect = self.image.get_rect()
@@ -80,10 +86,7 @@ class Ball(pygame.sprite.Sprite):
         #Ball physics
         if self.rect.x > 620:
             self.reset()
-<<<<<<< HEAD
-=======
             scored("player1")
->>>>>>> 107865c05856c19394792ef2c332e9f5e7d7a6c8
 
         if self.rect.x < 0:
             self.reset()
@@ -91,7 +94,6 @@ class Ball(pygame.sprite.Sprite):
             
         if self.rect.y < 0 or self.rect.y > 460:
             self.y_direction = self.y_direction * -1
-<<<<<<< HEAD
 
         self.getComponents()
         self.rect.x += self.dx
@@ -111,7 +113,7 @@ class Ball(pygame.sprite.Sprite):
         print(math.cos(self.angle))
         self.dy = self.speed * math.sin(self.angle) * self.y_direction
         print(math.sin(self.angle))   
-=======
+
             
 ##        self.rect.x += self.speed * self.x_direction
 ##        self.rect.y += self.speed * self.y_direction
@@ -133,17 +135,29 @@ class Ball(pygame.sprite.Sprite):
         if movement < 0:
             #change angle here
             if self.y_direction == -1:
-                self.angle += 10
+                self.angle += 0.3
+                if self.angle > 1.5:
+                    self.angle = 1.5
             if self.y_direction == 1:
-                self.angle += -10
+                self.angle += -0.3
+                if self.angle < 0:
+                    #make sure the angle is always positive
+                    self.angle = self.angle * -1
+                    self.y_direction = self.y_direction * -1
             #need code for if the ball is going straight
                 
         if movement > 0:
             #change angle here
             if self.y_direction == -1:
-                self.angle += -10
+                self.angle += -0.3
+                if self.angle < 0:
+                    #make sure the angle is always positive
+                    self.angle = self.angle * -1
+                    self.y_direction = self.y_direction * -1
             if self.y_direction == 1:
-                self.angle += 10
+                self.angle += 0.3
+                if self.angle > 1.5:
+                    self.angle = 1.5
             #need code for if the ball is going straight
 
         #do nothing if movement is 0
@@ -171,6 +185,7 @@ class PowerUp(pygame.sprite.Sprite):
             self.image = pygame.Surface([self.width, self.height])
             self.image.fill(BLUE)
             self.rect = self.image.get_rect()
+            
 
         #position is defined after the sprite has been determined
         self.rect.x = 300
@@ -188,8 +203,6 @@ class PowerUp(pygame.sprite.Sprite):
         
     def update(self):
         self.rect.x += self.direction * 4
-            
->>>>>>> 107865c05856c19394792ef2c332e9f5e7d7a6c8
     
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
@@ -228,6 +241,7 @@ pygame.display.set_caption("Pong")
 #define variables
 player1Score = 0
 player2Score = 0
+
 
 
 #define functions
@@ -278,7 +292,6 @@ while not done:
     #Collision checking
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
     #For each "main ball" hit, direction change
-<<<<<<< HEAD
     for mainBall in player1_ball_hit_group:
         mainBall.x_direction = 1
 
@@ -286,7 +299,7 @@ while not done:
     #For each "main ball" hit, direction change
     for mainBall in player2_ball_hit_group:
         mainBall.x_direction =  -1
-=======
+
     for ball in player1_ball_hit_group:
         ball.x_direction = 1
         #find and store what direction player 1 is moving
@@ -325,6 +338,8 @@ while not done:
             #Find what type of powerup it is
             powerType = powerUp.powerUpType
             player1.poweringUp(powerType)
+            powerUp_group.remove(powerUp)
+            all_sprites_group.remove(powerUp)
 
     #Collision checking between powerups FOR PLAYER 2
     for x in player_group:
@@ -335,8 +350,9 @@ while not done:
             #Find what type of powerup it is
             powerType = powerUp.powerUpType
             player2.poweringUp(powerType)
+            powerUp_group.remove(powerUp)
+            all_sprites_group.remove(powerUp)
 
->>>>>>> 107865c05856c19394792ef2c332e9f5e7d7a6c8
     
     #Update sprites
     all_sprites_group.update()
@@ -360,7 +376,8 @@ while not done:
 ##    print(math.cos(math.radians(45)))
 ##    print(math.sin(math.radians(45)))
 
+    timer += 1
     #Set clock speed
-    clock.tick(30)
+    clock.tick(60)
 pygame.quit()
 
