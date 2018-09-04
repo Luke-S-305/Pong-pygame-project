@@ -44,7 +44,7 @@ class Paddle(pygame.sprite.Sprite):
 
     def moveY(self, dy):
         #setting the change in Y
-        self.dy = dy
+        self.dy = dy * self.speed
 
     def returnDy(self):
         #a function to return what direction and what speed the paddle is moving at
@@ -59,6 +59,10 @@ class Paddle(pygame.sprite.Sprite):
             self.width = 15
             self.image = pygame.Surface([self.width, self.height])
             self.image.fill(WHITE)
+
+        if powerType == "increase speed":
+            self.startTimer = timer
+            self.speed = 1.5
 
     def update(self):
         self.rect.y += self.dy
@@ -171,25 +175,18 @@ class Ball(pygame.sprite.Sprite):
         self.y_direction = random.choice([-1, 1])
 
 class PowerUp(pygame.sprite.Sprite):
-    def __init__(self, powerUpType):
+    def __init__(self):
         super().__init__()
         #defining base characteristics which are the same for all power ups
         self.width = 30
         self.height = 30
         self.direction = 0
-        self.powerUpType = powerUpType
+        self.powerUpType = 0
+        self.randomPowerUp()
         #determine the state that the powerup is in
         self.state = "not hit"
-        #deciding which power up it should be
-        if powerUpType == "increase size":
-            self.image = pygame.Surface([self.width, self.height])
-            self.image.fill(BLUE)
-            self.rect = self.image.get_rect()
-            
-
         #position is defined after the sprite has been determined
-        self.rect.x = 300
-        self.rect.y = 50
+        self.randomLocation()
 
     def hit(self, direction):
         self.direction = direction
@@ -200,6 +197,30 @@ class PowerUp(pygame.sprite.Sprite):
         self.width = 20
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(BLUE)
+
+    def randomPowerUp(self):
+        seed = random.randint(1,2)
+        if seed == 1:
+            self.powerUpType = "increase size"
+            print("working")
+        if seed == 2:
+            self.powerUpType = "increase speed"
+            print("working")
+
+        #visuals for each powerup
+        if self.powerUpType == "increase size":
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(BLUE)
+            self.rect = self.image.get_rect()
+
+        if self.powerUpType == "increase speed":
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(BLUE)
+            self.rect = self.image.get_rect()
+
+    def randomLocation(self):
+        self.rect.x = random.randint(100, 500)
+        self.rect.y = random.randint(100, 340)
         
     def update(self):
         self.rect.x += self.direction * 4
@@ -214,7 +235,7 @@ powerUp_group = pygame.sprite.Group()
 player1 = Paddle(WHITE, 1)
 player2 = Paddle(WHITE, 2)
 ball = Ball("normal")
-powerUp = PowerUp("increase size")
+powerUp = PowerUp()
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -269,10 +290,10 @@ while not done:
     keys = pygame.key.get_pressed()
     plr1KeyPressed = 0 #Checks if a key has been pressed by player 1
     if keys[pygame.K_w] and player1.rect.y > 0:
-        player1.moveY(-10)
+        player1.moveY(-6)
         plr1KeyPressed = 1
     if keys[pygame.K_s] and player1.rect.y < 420:
-        player1.moveY(10)
+        player1.moveY(6)
         plr1KeyPressed = 1
     if plr1KeyPressed == 0:
         #If no keys have been pressed
@@ -280,15 +301,22 @@ while not done:
 
     plr2KeyPressed = 0 #Checks if a key has been pressed by player 2
     if keys[pygame.K_UP] and player2.rect.y > 0:
-        player2.moveY(-10)
+        player2.moveY(-6)
         plr2KeyPressed = 1
     if keys[pygame.K_DOWN] and player2.rect.y < 420:
-        player2.moveY(10)
+        player2.moveY(6)
         plr2KeyPressed = 1
     if plr2KeyPressed == 0:
         #If no keys have been pressed
         player2.moveY(0)
 
+    #Spawning powerups
+    spawnChance = random.random()
+    if spawnChance < 0.001:
+        powerUp = PowerUp()
+        powerUp_group.add(powerUp)
+        all_sprites_group.add(powerUp)
+    
     #Collision checking
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
     #For each "main ball" hit, direction change
@@ -352,6 +380,8 @@ while not done:
             player2.poweringUp(powerType)
             powerUp_group.remove(powerUp)
             all_sprites_group.remove(powerUp)
+
+    
 
     
     #Update sprites
