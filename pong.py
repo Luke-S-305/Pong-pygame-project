@@ -356,6 +356,7 @@ while not done:
             #Reverse the direction (so the power up travels back from where the ball is coming from)
             direction = direction * -1
             powerUp.hit(direction)
+            print("powerup hit detection working")
 
     #Collision checking between powerups FOR PLAYER 1 (see collisions code comments above for more detail)
     for x in player_group:
