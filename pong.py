@@ -100,8 +100,32 @@ class Ball(pygame.sprite.Sprite):
             self.y_direction = self.y_direction * -1
 
         self.getComponents()
+
+        #First update x direction
         self.rect.x += self.dx
+        #Check for collisons with walls
+        wall_hit_list = pygame.sprite.spritecollide(self, wall_group, False)
+        for wall in wall_hit_list:
+            print("working")
+            #if moving right, move the right edge of the ball to the left edge of the wall hit
+            if self.dx > 0:
+                self.rect.right = wall.rect.left
+            else:
+                #do the opposite for the opposite direction
+                self.rect.left = wall.rect.right
+        
+        #Then update y direction
         self.rect.y += self.dy
+        #Check for collisions with walls again
+        wall_hit_list = pygame.sprite.spritecollide(self, wall_group, False)
+        for wall in wall_hit_list:
+            print("working")
+            #if moving down, move the bottom edge of the ball to the top edge of the wall hit
+            if self.dy > 0:
+                self.rect.bottom = wall.rect.top
+            else:
+                #do the opposite for the opposite direction
+                self.rect.top = wall.rect.bottom
 
     def reset(self):
         #Put the ball back in the middle of the screen
@@ -110,23 +134,6 @@ class Ball(pygame.sprite.Sprite):
         self.x_direction = 1
         self.y_direction = 1
         self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
-
-    def getComponents(self):
-        #Set dy and dx based off angle generated with trigonometry
-        self.dx = self.speed * math.cos(self.angle) * self.x_direction
-        print(math.cos(self.angle))
-        self.dy = self.speed * math.sin(self.angle) * self.y_direction
-        print(math.sin(self.angle))   
-
-            
-##        self.rect.x += self.speed * self.x_direction
-##        self.rect.y += self.speed * self.y_direction
-
-        self.getComponents()
-        #print(self.dx)
-        #print(self.dy)
-        self.rect.x += self.dx
-        self.rect.y += self.dy
 
     def getComponents(self):
         #Set dy and dx based off angle generated with trigonometry
@@ -224,18 +231,33 @@ class PowerUp(pygame.sprite.Sprite):
         
     def update(self):
         self.rect.x += self.direction * 4
-    
+
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height):
+        super().__init__()
+
+        self.image = pygame.Surface([width, height])
+        self.image.fill(WHITE)
+
+        self.rect = self.image.get_rect()
+        self.rect.y = y
+        self.rect.x = x
+
 #Creating the groups
 all_sprites_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 ball_group = pygame.sprite.Group()
 powerUp_group = pygame.sprite.Group()
+wall_group = pygame.sprite.Group()
 
 #Creating the players
 player1 = Paddle(WHITE, 1)
 player2 = Paddle(WHITE, 2)
 ball = Ball("normal")
-powerUp = PowerUp()
+
+wall = Wall(0, 0, 480, 20)
+wall_group.add(wall)
+all_sprites_group.add(wall)
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -246,9 +268,6 @@ all_sprites_group.add(player2)
 
 all_sprites_group.add(ball)
 ball_group.add(ball)
-
-all_sprites_group.add(powerUp)
-powerUp_group.add(powerUp)
 
 #Setting the size of the screen
 screenWidth = 640
@@ -262,6 +281,7 @@ pygame.display.set_caption("Pong")
 #define variables
 player1Score = 0
 player2Score = 0
+powerUpInPlay = 0
 
 
 
@@ -312,10 +332,11 @@ while not done:
 
     #Spawning powerups
     spawnChance = random.random()
-    if spawnChance < 0.001:
+    if spawnChance < 0.001 and powerUpInPlay == 0:
         powerUp = PowerUp()
         powerUp_group.add(powerUp)
         all_sprites_group.add(powerUp)
+        powerUpInPlay = 1
     
     #Collision checking
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
@@ -348,15 +369,17 @@ while not done:
     #Go through all powerups in the powerup group one by one
     for x in powerUp_group:
         #Now that one powerup has been isolated, create another group for that single powerup
-        powerUp_hit_group = pygame.sprite.spritecollide(powerUp, ball_group, False)
+        powerUp_hit_group = pygame.sprite.spritecollide(x, ball_group, False)
         #Now going through the newly created group to isolate each ball that has collided with that single powerup
-        for y in powerUp_hit_group:
-            #Find the direction the ball is travelling in
-            direction = ball.x_direction
-            #Reverse the direction (so the power up travels back from where the ball is coming from)
-            direction = direction * -1
-            powerUp.hit(direction)
-            print("powerup hit detection working")
+        if x:
+            for y in powerUp_hit_group:
+                #Find the direction the ball is travelling in
+                direction = ball.x_direction
+                #Reverse the direction (so the power up travels back from where the ball is coming from)
+                direction = direction * -1
+                powerUp.hit(direction)
+                #After the collision, allow another powerup to spawn
+                powerUpInPlay = 0
 
     #Collision checking between powerups FOR PLAYER 1 (see collisions code comments above for more detail)
     for x in player_group:
