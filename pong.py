@@ -298,7 +298,7 @@ player2Score = 0
 powerUpInPlay = 0
 
 #Creating maps
-map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+map1 = [[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -309,7 +309,7 @@ map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+       [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]]
 
 map2 = [[0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
        [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
@@ -340,13 +340,14 @@ def drawMap(map):
     for x in range(12):
         for y in range(16):
             if map[x][y] == 1:
-                my_wall = Wall(x*40, y*40, 40, 40)
+                #fixed by swapping the x and y values in the constructor
+                my_wall = Wall(y*40, x*40, 40, 40)
                 wall_group.add(my_wall)
                 all_sprites_group.add(my_wall)
 
 done = False
 clock = pygame.time.Clock()
-drawMap(map2)
+drawMap(map1)
 
 ###MAIN LOOP
 while not done:
