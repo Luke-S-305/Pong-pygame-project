@@ -96,8 +96,10 @@ class Ball(pygame.sprite.Sprite):
             self.reset()
             scored("player2")
             
-        if self.rect.y < 0 or self.rect.y > 460:
-            self.y_direction = self.y_direction * -1
+        if self.rect.y < 0:
+            self.bounce("down")
+        if self.rect.y > 460:
+            self.bounce("up")
 
         self.getComponents()
 
@@ -106,26 +108,28 @@ class Ball(pygame.sprite.Sprite):
         #Check for collisons with walls
         wall_hit_list = pygame.sprite.spritecollide(self, wall_group, False)
         for wall in wall_hit_list:
-            print("working")
             #if moving right, move the right edge of the ball to the left edge of the wall hit
             if self.dx > 0:
                 self.rect.right = wall.rect.left
+                self.bounce("left")
             else:
                 #do the opposite for the opposite direction
                 self.rect.left = wall.rect.right
+                self.bounce("right")
         
         #Then update y direction
         self.rect.y += self.dy
         #Check for collisions with walls again
         wall_hit_list = pygame.sprite.spritecollide(self, wall_group, False)
         for wall in wall_hit_list:
-            print("working")
             #if moving down, move the bottom edge of the ball to the top edge of the wall hit
             if self.dy > 0:
                 self.rect.bottom = wall.rect.top
+                self.bounce("up")
             else:
                 #do the opposite for the opposite direction
                 self.rect.top = wall.rect.bottom
+                self.bounce("down")
 
     def reset(self):
         #Put the ball back in the middle of the screen
@@ -172,6 +176,16 @@ class Ball(pygame.sprite.Sprite):
             #need code for if the ball is going straight
 
         #do nothing if movement is 0
+
+    def bounce(self, direction):
+        if direction == "up":
+            self.y_direction = -1
+        if direction == "down":
+            self.y_direction = 1
+        if direction == "left":
+            self.x_direction = -1
+        if direction == "right":
+            self.x_direction = 1
 
     def reset(self):
         #Put the ball back in the middle of the screen
@@ -340,26 +354,16 @@ while not done:
     
     #Collision checking
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
-    #For each "main ball" hit, direction change
-    for mainBall in player1_ball_hit_group:
-        mainBall.x_direction = 1
-
-    player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
-    #For each "main ball" hit, direction change
-    for mainBall in player2_ball_hit_group:
-        mainBall.x_direction =  -1
-
     for ball in player1_ball_hit_group:
-        ball.x_direction = 1
+        ball.bounce("right")
         #find and store what direction player 1 is moving
         playerMovement = player1.returnDy()
         ball.changeAngle(playerMovement)
 
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
-    #For each "main ball" hit, direction change
     for ball in player2_ball_hit_group:
-        ball.x_direction = -1
+        ball.bounce("left")
         #find and store what direction player 2 is moving
         playerMovement = player2.returnDy()
         ball.changeAngle(playerMovement)
