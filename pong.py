@@ -297,7 +297,32 @@ player1Score = 0
 player2Score = 0
 powerUpInPlay = 0
 
+#Creating maps
+map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
+map2 = [[0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0]]
 
 #define functions
 def scored(player):
@@ -310,8 +335,18 @@ def scored(player):
         global player2Score
         player2Score += 1
 
+#Take in a map to draw and then place blocks
+def drawMap(map):
+    for x in range(12):
+        for y in range(16):
+            if map[x][y] == 1:
+                my_wall = Wall(x*40, y*40, 40, 40)
+                wall_group.add(my_wall)
+                all_sprites_group.add(my_wall)
+
 done = False
 clock = pygame.time.Clock()
+drawMap(map2)
 
 ###MAIN LOOP
 while not done:
@@ -422,7 +457,7 @@ while not done:
     all_sprites_group.draw(screen)
 
     #Drawing text
-    myfont = pygame.font.SysFont("Comic Sans MS", 50)
+    myfont = pygame.font.SysFont("Andale mono", 100)
     textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
     screen.blit(textsurface,(270,10))
     
