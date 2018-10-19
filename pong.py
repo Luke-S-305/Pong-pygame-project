@@ -131,14 +131,6 @@ class Ball(pygame.sprite.Sprite):
                 self.rect.top = wall.rect.bottom
                 self.bounce("down")
 
-    def reset(self):
-        #Put the ball back in the middle of the screen
-        self.rect.x = 150
-        self.rect.y = 200
-        self.x_direction = 1
-        self.y_direction = 1
-        self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
-
     def getComponents(self):
         #Set dy and dx based off angle generated with trigonometry
         self.dx = self.speed * math.cos(self.angle) * self.x_direction
