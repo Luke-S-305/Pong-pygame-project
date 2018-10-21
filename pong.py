@@ -284,6 +284,7 @@ pygame.display.set_caption("Pong")
 player1Score = 0
 player2Score = 0
 powerUpInPlay = 0
+gameStage = "gameplay"
 
 #Creating maps
 map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -350,13 +351,12 @@ done = False
 clock = pygame.time.Clock()
 drawMap(map3)
 
-###MAIN LOOP
-while not done:
-    #Events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-
+#Defining different modules that will make up the game:
+def mainGame():
+    #Ensure global variables are used
+    global powerUpInPlay
+    global player1Score
+    global player2Score
     #Check keypresses
     keys = pygame.key.get_pressed()
     plr1KeyPressed = 0 #Checks if a key has been pressed by player 1
@@ -446,9 +446,6 @@ while not done:
             powerUp_group.remove(powerUp)
             all_sprites_group.remove(powerUp)
 
-    
-
-    
     #Update sprites
     all_sprites_group.update()
     
@@ -462,14 +459,18 @@ while not done:
     myfont = pygame.font.SysFont("Andale mono", 100)
     textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
     screen.blit(textsurface,(270,10))
+        
+###MAIN LOOP
+while not done:
+    #Events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+    if gameStage == "gameplay":
+        mainGame()
     
     #Flip display
     pygame.display.flip()
-    
-    #Test values
-##    print(math.radians(45))
-##    print(math.cos(math.radians(45)))
-##    print(math.sin(math.radians(45)))
 
     timer += 1
     #Set clock speed
