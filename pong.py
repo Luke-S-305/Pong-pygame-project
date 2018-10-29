@@ -3,6 +3,7 @@ import pygame
 import random
 import math
 import decimal
+import time
 
 #Defining colours
 BLACK = (0, 0, 0)
@@ -284,7 +285,7 @@ pygame.display.set_caption("Pong")
 player1Score = 0
 player2Score = 0
 powerUpInPlay = 0
-gameStage = "gameplay"
+gameStage = "instructions"
 
 #Creating maps
 map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -351,7 +352,37 @@ done = False
 clock = pygame.time.Clock()
 drawMap(map3)
 
+def menuSelect(noOfOptions, selectedOptionNumber):
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        #Using the mod function
+        selectedOptionNumber = (selectedOptionNumber + 1) % noOfOptions
+    if keys[pygame.K_s]:
+        #If the selected option has the number 0,
+        if selectedOptionNumber == 0:
+            #Set the selection to the highest value possible (the reverse of the mod function)
+            selectedOptionNumber = noOfOptions - 1
+        else:
+            #If selection is not 0, reduce it by 1
+            selectedOptionNumber = selectedOptionNumber - 1
+            
+
 #Defining different modules that will make up the game:
+def instructions():
+
+    #Use menuSelect() here
+        
+    #Display elements
+    screen.fill(BLACK)
+    myfont = pygame.font.SysFont("Andale mono", 100)
+    textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
+    screen.blit(textsurface,(270,10))
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(30)
+    
 def mainGame():
     #Ensure global variables are used
     global powerUpInPlay
@@ -466,6 +497,8 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+    if gameStage == "instructions":
+        instructions()
     if gameStage == "gameplay":
         mainGame()
     
