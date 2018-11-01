@@ -285,7 +285,13 @@ pygame.display.set_caption("Pong")
 player1Score = 0
 player2Score = 0
 powerUpInPlay = 0
-gameStage = "instructions"
+gameStage = "player select"
+
+#define menu variables
+instructionsPointer = 0
+playerSelectPointer = 0
+menuSelectPointer = 0 
+difficultySelectPointer = 0
 
 #Creating maps
 map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -366,6 +372,7 @@ def menuSelect(noOfOptions, selectedOptionNumber):
         else:
             #If selection is not 0, reduce it by 1
             selectedOptionNumber = selectedOptionNumber - 1
+    return selectedOptionNumber
             
 
 #Defining different modules that will make up the game:
@@ -375,13 +382,38 @@ def instructions():
         
     #Display elements
     screen.fill(BLACK)
-    myfont = pygame.font.SysFont("Andale mono", 100)
-    textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
-    screen.blit(textsurface,(270,10))
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+    
+    title = titleFont.render("instructions", False, WHITE)
+    
+    screen.blit(title,(100,10))
     pygame.display.update()
 
     #Set clock speed
     clock.tick(30)
+
+def playerSelect():
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+    
+    title = titleFont.render("Player Select", False, WHITE)
+    onePlayer = optionFont.render("1 player", False, WHITE)
+    twoPlayer = optionFont.render("2 players", False, WHITE)
+    
+    screen.blit(title,(50,10))
+    screen.blit(onePlayer,(50,200))
+    screen.blit(twoPlayer,(400,200))
+    
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(30)
+    
+def difficultySelect():
+    print("Working")
     
 def mainGame():
     #Ensure global variables are used
@@ -499,8 +531,11 @@ while not done:
             done = True
     if gameStage == "instructions":
         instructions()
+    if gameStage == "player select":
+        playerSelect()
     if gameStage == "gameplay":
         mainGame()
+
     
     #Flip display
     pygame.display.flip()
