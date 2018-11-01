@@ -289,6 +289,7 @@ gameStage = "player select"
 
 #define menu variables
 instructionsPointer = 0
+global playerSelectPointer
 playerSelectPointer = 0
 menuSelectPointer = 0 
 difficultySelectPointer = 0
@@ -386,7 +387,8 @@ def instructions():
     optionFont = pygame.font.SysFont("Andale mono", 50)
     
     title = titleFont.render("instructions", False, WHITE)
-    
+
+    #drawing the text
     screen.blit(title,(100,10))
     pygame.display.update()
 
@@ -398,15 +400,24 @@ def playerSelect():
     screen.fill(BLACK)
     titleFont = pygame.font.SysFont("Andale mono", 100)
     optionFont = pygame.font.SysFont("Andale mono", 50)
+
+    #run menu selection function
+    playerSelectPointer = menuSelect(2, playerSelectPointer)
     
     title = titleFont.render("Player Select", False, WHITE)
-    onePlayer = optionFont.render("1 player", False, WHITE)
-    twoPlayer = optionFont.render("2 players", False, WHITE)
-    
+    #logic to determine which option should be highlighted
+    if playerSelectPointer == 0:
+        onePlayer = optionFont.render("1 player", False, RED)
+        twoPlayer = optionFont.render("2 players", False, WHITE)
+    elif playerSelectPointer == 1:
+        onePlayer = optionFont.render("1 player", False, WHITE)
+        twoPlayer = optionFont.render("2 players", False, RED)
+
+    #drawing the text
     screen.blit(title,(50,10))
     screen.blit(onePlayer,(50,200))
     screen.blit(twoPlayer,(400,200))
-    
+
     pygame.display.update()
 
     #Set clock speed
