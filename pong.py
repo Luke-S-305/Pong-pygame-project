@@ -10,6 +10,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (50, 50, 255)
 YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
 
 #defining some variables before classes
 global timer
@@ -286,10 +287,11 @@ player1Score = 0
 player2Score = 0
 powerUpInPlay = 0
 gameStage = "player select"
+numberOfPlayers = 0
+difficulty = ""
 
 #define menu variables
 instructionsPointer = 0
-global playerSelectPointer
 playerSelectPointer = 0
 menuSelectPointer = 0 
 difficultySelectPointer = 0
@@ -402,6 +404,7 @@ def playerSelect():
     optionFont = pygame.font.SysFont("Andale mono", 50)
 
     #run menu selection function
+    global playerSelectPointer
     playerSelectPointer = menuSelect(2, playerSelectPointer)
     
     title = titleFont.render("Player Select", False, WHITE)
@@ -412,6 +415,19 @@ def playerSelect():
     elif playerSelectPointer == 1:
         onePlayer = optionFont.render("1 player", False, WHITE)
         twoPlayer = optionFont.render("2 players", False, RED)
+
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global numberOfPlayers
+        global gameStage
+        if playerSelectPointer == 0:
+            numberOfPlayers = 1
+            gameStage = "difficulty select"
+        elif playerSelectPointer == 1:
+            numberOfPlayers = 2
+            gameStage = "second player instructions"
 
     #drawing the text
     screen.blit(title,(50,10))
@@ -424,7 +440,57 @@ def playerSelect():
     clock.tick(30)
     
 def difficultySelect():
-    print("Working")
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+
+    #run menu selection function
+    global difficultySelectPointer
+    difficultySelectPointer = menuSelect(3, difficultySelectPointer)
+    
+    title = titleFont.render("Difficulty Select", False, WHITE)
+    #logic to determine which option should be highlighted
+    if difficultySelectPointer == 0:
+        easy = optionFont.render("easy", False, RED)
+        medium = optionFont.render("medium", False, WHITE)
+        hard = optionFont.render("hard", False, WHITE)
+    elif difficultySelectPointer == 1:
+        easy = optionFont.render("easy", False, WHITE)
+        medium = optionFont.render("medium", False, RED)
+        hard = optionFont.render("hard", False, WHITE)
+    elif difficultySelectPointer == 2:
+        easy = optionFont.render("easy", False, WHITE)
+        medium = optionFont.render("medium", False, WHITE)
+        hard = optionFont.render("hard", False, RED)
+
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global difficulty
+        global gameStage
+        if difficultySelectPointer == 0:
+            difficulty = "easy"
+        elif difficultySelectPointer == 1:
+            difficulty = "medium"
+        elif difficultySelectPointer == 2:
+            difficulty = "hard"
+        gameStage = "gameplay"
+
+    #drawing the text
+    screen.blit(title,(50,10))
+    screen.blit(easy,(10,200))
+    screen.blit(medium,(200,200))
+    screen.blit(hard,(500,200))
+
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(30)
+
+def secondPlayerInstructions():
+    print("second instructions working")
     
 def mainGame():
     #Ensure global variables are used
@@ -544,6 +610,10 @@ while not done:
         instructions()
     if gameStage == "player select":
         playerSelect()
+    if gameStage == "difficulty select":
+        difficultySelect()
+    if gameStage == "second player instructions":
+        secondPlayerInstructions()
     if gameStage == "gameplay":
         mainGame()
 
