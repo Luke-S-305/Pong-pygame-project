@@ -361,6 +361,7 @@ done = False
 clock = pygame.time.Clock()
 drawMap(map3)
 
+#the menu select function used to navigate menus
 def menuSelect(noOfOptions, selectedOptionNumber):
     #Check keypresses
     keys = pygame.key.get_pressed()
@@ -395,7 +396,7 @@ def instructions():
     pygame.display.update()
 
     #Set clock speed
-    clock.tick(30)
+    clock.tick(10)
 
 def playerSelect():
     #Display elements
@@ -437,7 +438,7 @@ def playerSelect():
     pygame.display.update()
 
     #Set clock speed
-    clock.tick(30)
+    clock.tick(10)
     
 def difficultySelect():
     #Display elements
@@ -487,7 +488,7 @@ def difficultySelect():
     pygame.display.update()
 
     #Set clock speed
-    clock.tick(30)
+    clock.tick(10)
 
 def secondPlayerInstructions():
     print("second instructions working")
@@ -608,13 +609,13 @@ while not done:
             done = True
     if gameStage == "instructions":
         instructions()
-    if gameStage == "player select":
+    elif gameStage == "player select":
         playerSelect()
-    if gameStage == "difficulty select":
+    elif gameStage == "difficulty select":
         difficultySelect()
-    if gameStage == "second player instructions":
+    elif gameStage == "second player instructions":
         secondPlayerInstructions()
-    if gameStage == "gameplay":
+    elif gameStage == "gameplay":
         mainGame()
 
     
