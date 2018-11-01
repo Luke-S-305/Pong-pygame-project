@@ -100,8 +100,10 @@ class Ball(pygame.sprite.Sprite):
             
         if self.rect.y < 0:
             self.bounce("down")
+            self.rect.y = 0
         if self.rect.y > 460:
             self.bounce("up")
+            self.rect.y = 460
 
         self.getComponents()
 
