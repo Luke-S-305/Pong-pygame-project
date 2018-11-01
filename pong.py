@@ -286,15 +286,18 @@ pygame.display.set_caption("Pong")
 player1Score = 0
 player2Score = 0
 powerUpInPlay = 0
-gameStage = "player select"
+gameStage = "watch example gameplay select"
 numberOfPlayers = 0
-difficulty = ""
+difficulty = "medium" #Default normal for 2 player
 
 #define menu variables
 instructionsPointer = 0
 playerSelectPointer = 0
 menuSelectPointer = 0 
 difficultySelectPointer = 0
+exampleGameplaySelectPointer = 0
+easyMapSelectionPointer = 0
+mediumMapSelectionPointer = 0
 
 #Creating maps
 map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -382,26 +385,85 @@ def menuSelect(noOfOptions, selectedOptionNumber):
 #Defining different modules that will make up the game:
 def instructions():
 
-    #Use menuSelect() here
+    #no need for menuSelect() as there is only 1 option
         
     #Display elements
     screen.fill(BLACK)
     titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
     optionFont = pygame.font.SysFont("Andale mono", 50)
     
     title = titleFont.render("instructions", False, WHITE)
+    mainText = textFont.render("Use the <w> and <s> keys to move your paddle up and down", False, WHITE)
+    exitText = textFont.render("Press the <ENTER> key to continue", False, RED)
 
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global gameStage
+        gameStage = "player select"
+        
     #drawing the text
     screen.blit(title,(100,10))
+    screen.blit(mainText,(10,150))
+    screen.blit(exitText,(10,250))
     pygame.display.update()
 
     #Set clock speed
     clock.tick(10)
 
+def watchExampleGameplaySelect():
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+
+    #run menu selection function
+    global exampleGameplaySelectPointer
+    exampleGameplaySelectPointer = menuSelect(2, exampleGameplaySelectPointer)
+    
+    mainText = textFont.render("Would you like to watch some example gameplay?", False, WHITE)
+    instructionText1 = textFont.render("Use the <w> and <s> keys select an option", False, WHITE)
+    instructionText2 = textFont.render("Press enter to confirm your option", False, WHITE)
+    #logic to determine which option should be highlighted
+    if exampleGameplaySelectPointer == 0:
+        yes = optionFont.render("yes", False, RED)
+        no = optionFont.render("no", False, WHITE)
+    elif exampleGameplaySelectPointer == 1:
+        yes = optionFont.render("yes", False, WHITE)
+        no = optionFont.render("no", False, RED)
+
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global gameStage
+        if exampleGameplaySelectPointer == 0:
+            gameStage = "example gameplay"
+        elif exampleGameplaySelectPointer == 1:
+            gameStage = "instructions"
+
+    #drawing the text
+    screen.blit(mainText,(50,10))
+    screen.blit(instructionText1, (10, 100))
+    screen.blit(instructionText2, (10, 150))
+    screen.blit(yes,(50,200))
+    screen.blit(no,(400,200))
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(10)
+
+def exampleGameplay():
+    print("Show example gameplay now")
+
 def playerSelect():
     #Display elements
     screen.fill(BLACK)
     titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
     optionFont = pygame.font.SysFont("Andale mono", 50)
 
     #run menu selection function
@@ -444,6 +506,7 @@ def difficultySelect():
     #Display elements
     screen.fill(BLACK)
     titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
     optionFont = pygame.font.SysFont("Andale mono", 50)
 
     #run menu selection function
@@ -492,6 +555,60 @@ def difficultySelect():
 
 def secondPlayerInstructions():
     print("second instructions working")
+
+def easyMapSelection():
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+
+    #run menu selection function
+    global easyMapSelectionPointer
+    easyMapSelectionPointer = menuSelect(3, easyMapSelectionPointer)
+    
+    title = titleFont.render("Select a map", False, WHITE)
+    #logic to determine which option should be highlighted
+    if easyMapSelectionPointer == 0:
+        map1 = optionFont.render("map 1", False, RED)
+        map2 = optionFont.render("map 2", False, WHITE)
+        map3 = optionFont.render("map 3", False, WHITE)
+    elif easyMapSelectionPointer == 1:
+        map1 = optionFont.render("map 1", False, WHITE)
+        map2 = optionFont.render("map 2", False, RED)
+        map3 = optionFont.render("map 3", False, WHITE)
+    elif easyMapSelectionPointer == 2:
+        map1 = optionFont.render("map 1", False, WHITE)
+        map2 = optionFont.render("map 2", False, WHITE)
+        map3 = optionFont.render("map 3", False, RED)
+
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global difficulty
+        global gameStage
+        if difficultySelectPointer == 0:
+            difficulty = "easy"
+        elif difficultySelectPointer == 1:
+            difficulty = "medium"
+        elif difficultySelectPointer == 2:
+            difficulty = "hard"
+        gameStage = "gameplay"
+
+    #drawing the text
+    screen.blit(title,(50,10))
+    screen.blit(map1,(10,200))
+    screen.blit(map2,(200,200))
+    screen.blit(map3,(500,200))
+
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(10)
+
+def mediumMapSelection():
+    print("working")
     
 def mainGame():
     #Ensure global variables are used
@@ -611,6 +728,10 @@ while not done:
         instructions()
     elif gameStage == "player select":
         playerSelect()
+    elif gameStage == "watch example gameplay select":
+        watchExampleGameplaySelect()
+    elif gameStage == "example gameplay":
+        exampleGameplay()
     elif gameStage == "difficulty select":
         difficultySelect()
     elif gameStage == "second player instructions":
@@ -624,6 +745,11 @@ while not done:
 
     timer += 1
     #Set clock speed
-    clock.tick(60)
+    if difficulty == "easy":
+        clock.tick(40)
+    if difficulty == "medium":
+        clock.tick(60)
+    if difficulty == "hard":
+        clock.tick(80)
 pygame.quit()
 
