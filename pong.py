@@ -66,6 +66,9 @@ class Paddle(pygame.sprite.Sprite):
             self.startTimer = timer
             self.speed = 1.5
 
+    def returnY(self):
+        return self.rect.y
+
     def update(self):
         self.rect.y += self.dy
         self.rect.x += self.dx
@@ -238,6 +241,12 @@ class PowerUp(pygame.sprite.Sprite):
     def randomLocation(self):
         self.rect.x = random.randint(100, 500)
         self.rect.y = random.randint(100, 340)
+
+    def returnY(self):
+        return self.rect.y
+
+    def returnX(self):
+        return self.rect.x
         
     def update(self):
         self.rect.x += self.direction * 4
@@ -301,45 +310,7 @@ exampleGameplaySelectPointer = 0
 easyMapSelectionPointer = 0
 mediumMapSelectionPointer = 0
 
-#Creating maps
-map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
-map2 = [[0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0]]
-
-map3 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
-       [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
-       [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
 #define functions
 def scored(player):
@@ -362,9 +333,69 @@ def drawMap(map):
                 wall_group.add(my_wall)
                 all_sprites_group.add(my_wall)
 
+def createMap(number):
+    #Creating maps
+    map1 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+    map2 = [[0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0]]
+
+    map3 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+           [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+           [0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+    
+    if number == 1:
+        drawMap(map1)
+    elif number == 2:
+        drawMap(map2)
+    elif number == 3:
+        drawMap(map3)
+
 done = False
 clock = pygame.time.Clock()
-drawMap(map3)
+#drawMap(map3)
+
+#Creating AI players
+def easyAI(paddleXLocation):
+    global screenHeight
+    #probability is the chance that the paddle moves down. It will otherwise move up
+    probability = (screenHeight - paddleXLocation)/(screenHeight - 60)
+    if probability >= random.random():
+        return "down"
+    else:
+        return "up"
+
+
 
 #the menu select function used to navigate menus
 def menuSelect(noOfOptions, selectedOptionNumber):
@@ -546,9 +577,9 @@ def difficultySelect():
 
     #drawing the text
     screen.blit(title,(50,10))
-    screen.blit(easy,(10,200))
-    screen.blit(medium,(200,200))
-    screen.blit(hard,(500,200))
+    screen.blit(easy,(30,200))
+    screen.blit(medium,(220,200))
+    screen.blit(hard,(520,200))
 
     pygame.display.update()
 
@@ -556,7 +587,33 @@ def difficultySelect():
     clock.tick(10)
 
 def secondPlayerInstructions():
-    print("second instructions working")
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+    
+    title = titleFont.render("instructions", False, WHITE)
+    mainText1 = textFont.render("Use the <UP ARROW> and <DOWN ARROW> keys to move your", False, WHITE)
+    mainText2 = textFont.render("paddle up and down", False, WHITE)
+    exitText = textFont.render("Press the <ENTER> key to continue", False, RED)
+
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global gameStage
+        gameStage = "easy map selection"
+        
+    #drawing the text
+    screen.blit(title,(100,10))
+    screen.blit(mainText1,(10,150))
+    screen.blit(mainText2,(10,180))
+    screen.blit(exitText,(10,250))
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(10)
 
 def easyMapSelection():
     #Display elements
@@ -588,14 +645,14 @@ def easyMapSelection():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RETURN]:
         #Make sure variables being changed are global
-        global difficulty
         global gameStage
-        if difficultySelectPointer == 0:
-            difficulty = "easy"
-        elif difficultySelectPointer == 1:
-            difficulty = "medium"
-        elif difficultySelectPointer == 2:
-            difficulty = "hard"
+        if easyMapSelectionPointer == 0:
+            mapChosen = 1
+        elif easyMapSelectionPointer == 1:
+            mapChosen = 2
+        elif easyMapSelectionPointer == 2:
+            mapChosen = 3
+        createMap(mapChosen)
         gameStage = "gameplay"
 
     #drawing the text
@@ -609,8 +666,9 @@ def easyMapSelection():
     #Set clock speed
     clock.tick(10)
 
-def mediumMapSelection():
+def fullMapSelection():
     print("working")
+    
     
 def mainGame():
     #Ensure global variables are used
@@ -630,16 +688,25 @@ def mainGame():
         #If no keys have been pressed
         player1.moveY(0)
 
-    plr2KeyPressed = 0 #Checks if a key has been pressed by player 2
-    if keys[pygame.K_UP] and player2.rect.y > 0:
-        player2.moveY(-6)
-        plr2KeyPressed = 1
-    if keys[pygame.K_DOWN] and player2.rect.y < 420:
-        player2.moveY(6)
-        plr2KeyPressed = 1
-    if plr2KeyPressed == 0:
-        #If no keys have been pressed
-        player2.moveY(0)
+    global numberOfPlayers
+    if numberOfPlayers == 2:
+        plr2KeyPressed = 0 #Checks if a key has been pressed by player 2
+        if keys[pygame.K_UP] and player2.rect.y > 0:
+            player2.moveY(-6)
+            plr2KeyPressed = 1
+        if keys[pygame.K_DOWN] and player2.rect.y < 420:
+            player2.moveY(6)
+            plr2KeyPressed = 1
+        if plr2KeyPressed == 0:
+            #If no keys have been pressed
+            player2.moveY(0)
+    elif numberOfPlayers == 1:
+        global difficulty
+        if difficulty == "easy":
+            if easyAI(player2.returnY()) == "up":
+                player2.moveY(-6)
+            elif easyAI(player2.returnY()) == "down":
+                player2.moveY(6)
 
     #Spawning powerups
     spawnChance = random.random()
@@ -738,6 +805,10 @@ while not done:
         difficultySelect()
     elif gameStage == "second player instructions":
         secondPlayerInstructions()
+    elif gameStage == "easy map selection":
+        easyMapSelection()
+    elif gameStage == "full map selection":
+        fullMapSelection()
     elif gameStage == "gameplay":
         mainGame()
 
