@@ -71,7 +71,10 @@ class Paddle(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y += self.dy
-        self.rect.x += self.dx
+        if self.rect.y > (screenHeight - self.height):
+            self.rect.y = screenHeight - self.height
+        if self.rect.y < 0:
+            self.rect.y = 0
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, ballType):
@@ -186,6 +189,12 @@ class Ball(pygame.sprite.Sprite):
         if direction == "right":
             self.x_direction = 1
 
+    def returnY(self):
+        return self.rect.y
+
+    def returnX(self):
+        return self.rect.x
+
     def reset(self):
         #Put the ball back in the middle of the screen
         self.rect.x = 320
@@ -241,12 +250,6 @@ class PowerUp(pygame.sprite.Sprite):
     def randomLocation(self):
         self.rect.x = random.randint(100, 500)
         self.rect.y = random.randint(100, 340)
-
-    def returnY(self):
-        return self.rect.y
-
-    def returnX(self):
-        return self.rect.x
         
     def update(self):
         self.rect.x += self.direction * 4
@@ -395,7 +398,35 @@ def easyAI(paddleXLocation):
     else:
         return "up"
 
-
+def mediumAI(ballX,ballY,paddleY, side):
+    #side is which side the paddle is situated on
+    if side == "right":
+        #if the ball is in the latter quarter of the screen
+        if ballX < screenWidth * 0.75: #follow ball
+            if ballY > paddleY:
+                return "up"
+            if ballY < paddleY:
+                return "down"
+        else: #Move towards middle
+            if paddleY > screenHeight/2:
+                return "down"
+            if paddleY < screenHeight/2:
+                return "up"
+            
+    if side == "left":
+        #if the ball is in the first quarter of the screen
+        if ballX > screenWidth * 0.25: #follow ball
+            if ballY > paddleY:
+                return "up"
+            if ballY < paddleY:
+                return "down"
+        else: #Move towards middle
+            if paddleY > screenHeight/2:
+                return "down"
+            if paddleY < screenHeight/2:
+                return "up"
+        
+    
 
 #the menu select function used to navigate menus
 def menuSelect(noOfOptions, selectedOptionNumber):
@@ -702,10 +733,16 @@ def mainGame():
             player2.moveY(0)
     elif numberOfPlayers == 1:
         global difficulty
+        global ball
         if difficulty == "easy":
             if easyAI(player2.returnY()) == "up":
                 player2.moveY(-6)
             elif easyAI(player2.returnY()) == "down":
+                player2.moveY(6)
+        if difficulty == "medium":
+            if mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), "right") == "up":
+                player2.moveY(-6)
+            elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), "right") == "down":
                 player2.moveY(6)
 
     #Spawning powerups
