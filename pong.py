@@ -69,6 +69,9 @@ class Paddle(pygame.sprite.Sprite):
     def returnY(self):
         return self.rect.y
 
+    def returnWidth(self):
+        return self.width
+
     def update(self):
         self.rect.y += self.dy
         if self.rect.y > (screenHeight - self.height):
@@ -398,33 +401,33 @@ def easyAI(paddleXLocation):
     else:
         return "up"
 
-def mediumAI(ballX,ballY,paddleY, side):
+def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
     #side is which side the paddle is situated on
     if side == "right":
         #if the ball is in the latter quarter of the screen
-        if ballX < screenWidth * 0.75: #follow ball
-            if ballY > paddleY:
-                return "up"
-            if ballY < paddleY:
-                return "down"
+        if ballX > screenWidth * 0.75: #follow ball
+            if ballY > paddleY+(paddleWidth/2):
+                return "down" #remember y = o at the top of the screen
+            elif ballY < paddleY+(paddleWidth/2):
+                return "up" #remember y = o at the top of the screen
         else: #Move towards middle
-            if paddleY > screenHeight/2:
-                return "down"
-            if paddleY < screenHeight/2:
-                return "up"
+            if paddleY+(paddleWidth/2) > (screenHeight*(3/4)):
+                return "up" #remember y = o at the top of the screen
+            elif paddleY+(paddleWidth/2) < (screenHeight*(1/4)):
+                return "down" #remember y = o at the top of the screen
             
     if side == "left":
         #if the ball is in the first quarter of the screen
-        if ballX > screenWidth * 0.25: #follow ball
-            if ballY > paddleY:
-                return "up"
-            if ballY < paddleY:
-                return "down"
+        if ballX < screenWidth * 0.25: #follow ball
+            if ballY > paddleY+(paddleWidth/2):
+                return "down" #remember y = o at the top of the screen
+            elif ballY < paddleY+(paddleWidth/2):
+                return "up" #remember y = o at the top of the screen
         else: #Move towards middle
-            if paddleY > screenHeight/2:
-                return "down"
-            if paddleY < screenHeight/2:
-                return "up"
+            if paddleY+(paddleWidth/2) > screenHeight/2:
+                return "up" #remember y = o at the top of the screen
+            elif paddleY+(paddleWidth/2) < screenHeight/2:
+                return "down" #remember y = o at the top of the screen
         
     
 
@@ -740,9 +743,9 @@ def mainGame():
             elif easyAI(player2.returnY()) == "down":
                 player2.moveY(6)
         if difficulty == "medium":
-            if mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), "right") == "up":
+            if mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
                 player2.moveY(-6)
-            elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), "right") == "down":
+            elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
                 player2.moveY(6)
 
     #Spawning powerups
