@@ -410,11 +410,15 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
                 return "down" #remember y = o at the top of the screen
             elif ballY < paddleY+(paddleWidth/2):
                 return "up" #remember y = o at the top of the screen
+            else:
+                return "none"
         else: #Move towards middle
             if paddleY+(paddleWidth/2) > (screenHeight*(3/4)):
                 return "up" #remember y = o at the top of the screen
             elif paddleY+(paddleWidth/2) < (screenHeight*(1/4)):
                 return "down" #remember y = o at the top of the screen
+            else:
+                return "none"
             
     if side == "left":
         #if the ball is in the first quarter of the screen
@@ -423,11 +427,15 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
                 return "down" #remember y = o at the top of the screen
             elif ballY < paddleY+(paddleWidth/2):
                 return "up" #remember y = o at the top of the screen
+            else:
+                return "none"
         else: #Move towards middle
             if paddleY+(paddleWidth/2) > screenHeight/2:
                 return "up" #remember y = o at the top of the screen
             elif paddleY+(paddleWidth/2) < screenHeight/2:
                 return "down" #remember y = o at the top of the screen
+            else:
+                return "none"
         
     
 
@@ -747,6 +755,8 @@ def mainGame():
                 player2.moveY(-6)
             elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
                 player2.moveY(6)
+            elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
+                player2.moveY(0)
 
     #Spawning powerups
     spawnChance = random.random()
