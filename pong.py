@@ -405,7 +405,7 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
     #side is which side the paddle is situated on
     if side == "right":
         #if the ball is in the latter quarter of the screen
-        if ballX > screenWidth * 0.75: #follow ball
+        if ballX > screenWidth * 0.8: #follow ball
             if ballY > paddleY+(paddleWidth/2):
                 return "down" #remember y = o at the top of the screen
             elif ballY < paddleY+(paddleWidth/2):
@@ -422,7 +422,7 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
             
     if side == "left":
         #if the ball is in the first quarter of the screen
-        if ballX < screenWidth * 0.25: #follow ball
+        if ballX < screenWidth * 0.2: #follow ball
             if ballY > paddleY+(paddleWidth/2):
                 return "down" #remember y = o at the top of the screen
             elif ballY < paddleY+(paddleWidth/2):
@@ -430,9 +430,9 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
             else:
                 return "none"
         else: #Move towards middle
-            if paddleY+(paddleWidth/2) > screenHeight/2:
+            if paddleY+(paddleWidth/2) > (screenHeight*(3/4)):
                 return "up" #remember y = o at the top of the screen
-            elif paddleY+(paddleWidth/2) < screenHeight/2:
+            elif paddleY+(paddleWidth/2) < (screenHeight*(1/4)):
                 return "down" #remember y = o at the top of the screen
             else:
                 return "none"
@@ -532,7 +532,72 @@ def watchExampleGameplaySelect():
     clock.tick(10)
 
 def exampleGameplay():
-    print("Show example gameplay now")
+    ###similar to main gameplay only missing some elements to simplify the gameplay
+    #Ensure global variables are used
+    global powerUpInPlay
+    global player1Score
+    global player2Score
+
+    #Uses medium difficulty AI
+    global ball
+    #AI number 1
+    if mediumAI(ball.returnX(), ball.returnY(), player1.returnY(), player1.returnWidth(), "left") == "up":
+        player1.moveY(-6)
+    elif mediumAI(ball.returnX(), ball.returnY(), player1.returnY(), player1.returnWidth(), "left") == "down":
+        player1.moveY(6)
+    elif mediumAI(ball.returnX(), ball.returnY(), player1.returnY(), player1.returnWidth(), "left") == "none":
+        player1.moveY(0)
+    
+    #AI number 2
+    if mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
+        player2.moveY(-6)
+    elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
+        player2.moveY(6)
+    elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
+        player2.moveY(0)
+    
+    #Collision checking
+    player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
+    for ball in player1_ball_hit_group:
+        ball.bounce("right")
+        #find and store what direction player 1 is moving
+        playerMovement = player1.returnDy()
+        ball.changeAngle(playerMovement)
+
+
+    player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
+    for ball in player2_ball_hit_group:
+        ball.bounce("left")
+        #find and store what direction player 2 is moving
+        playerMovement = player2.returnDy()
+        ball.changeAngle(playerMovement)
+
+    #User input
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]: #on pressing enter
+        #Make sure variables being changed are global
+        global gameStage
+        gameStage = "instructions" #move on to instruction stage
+        time.sleep(0.1) #Sleep statement used to prevent enter keypress being registered in the next menu    
+    
+    #Update sprites
+    all_sprites_group.update()
+    
+    #Create the black background
+    screen.fill(BLACK)
+
+    #Drawing the sprites
+    all_sprites_group.draw(screen)
+
+    #Drawing text
+    myfont = pygame.font.SysFont("Andale mono", 100)
+    textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
+    screen.blit(textsurface,(270,10))
+
+    #Text graphic showing how to get out the example gameplay
+    textFont = pygame.font.SysFont("Andale mono", 30)
+    exitText = textFont.render("Press the <ENTER> key to continue", False, RED)
+    screen.blit(exitText,(145,400))
 
 def playerSelect():
     #Display elements
