@@ -80,7 +80,7 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.y = 0
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, ballType, angle = -1, x = 0, y = 0, y_dir = 0 ):
+    def __init__(self, ballType):
         super().__init__()
         #Deciding what type of ball it should be
         self.ballType = ballType
@@ -98,19 +98,17 @@ class Ball(pygame.sprite.Sprite):
             self.reset()
 
         if self.ballType == "shadow":
-            #set values to the current ones of the main ball
-            print("working")
+            #Set basic values, others will be set in shadowReset()
             self.width = 20
             self.height = 20
-            self.angle = angle
-            self.x_direction = 1
-            self.y_direction = y_dir
-            self.speed = 5
+            self.speed = 4
             self.image = pygame.Surface([self.width, self.height])
             self.image.fill(RED)
             self.rect = self.image.get_rect()
-            self.rect.x = x
-            self.rect.y = y
+            #some placeholders
+            self.angle = 0
+            self.x_direction = 0
+            self.y_direction = 0
             
     def update(self):
         #Ball physics
@@ -221,6 +219,23 @@ class Ball(pygame.sprite.Sprite):
     def returnX(self):
         return self.rect.x
 
+    def shadowReset(self, angle = -1, x = 0, y = 0, y_dir = 0):
+        #make the shadow ball take the data from the main ball
+        self.width = 20
+        self.height = 20
+        self.angle = angle
+        self.x_direction = 1
+        self.y_direction = y_dir
+        self.speed = 4
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        #give the shadow ball a head start by a random value between 
+        for i in range(random.randint(15, 25)):
+            self.update()
+    
     def reset(self):
         #Put the ball back in the middle of the screen
         self.rect.x = 320
@@ -302,6 +317,8 @@ wall_group = pygame.sprite.Group()
 player1 = Paddle(WHITE, 1)
 player2 = Paddle(WHITE, 2)
 mainBall = Ball("normal")
+#create a shadow ball for the "hard AI"
+shadowBall = Ball("shadow")
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -312,6 +329,9 @@ all_sprites_group.add(player2)
 
 all_sprites_group.add(mainBall)
 ball_group.add(mainBall)
+
+all_sprites_group.add(shadowBall)
+ball_group.add(shadowBall)
 
 #Setting the size of the screen
 screenWidth = 640
@@ -863,10 +883,9 @@ def mainGame():
         ball.changeAngle(playerMovement)
 
         if ball.ballType == "normal":
-            #create a shadow ball for the "hard AI"
-            shadowBall = Ball("shadow", mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
-            all_sprites_group.add(shadowBall)
-            ball_group.add(shadowBall)
+            #Reset shadow ball to normal ball position
+            shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
+
 
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
