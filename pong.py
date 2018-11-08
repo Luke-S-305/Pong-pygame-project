@@ -80,14 +80,14 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.y = 0
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, ballType):
+    def __init__(self, ballType, angle = -1, x = 0, y = 0, y_dir = 0 ):
         super().__init__()
         #Deciding what type of ball it should be
-        if ballType == "normal":
+        self.ballType = ballType
+        if self.ballType == "normal":
             self.width = 20
             self.height = 20
             self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
-            self.speed = 4
             self.x_direction = 1
             self.y_direction = 1
 
@@ -96,16 +96,39 @@ class Ball(pygame.sprite.Sprite):
             self.image.fill(WHITE)
             self.rect = self.image.get_rect()
             self.reset()
+
+        if self.ballType == "shadow":
+            #set values to the current ones of the main ball
+            print("working")
+            self.width = 20
+            self.height = 20
+            self.angle = angle
+            self.x_direction = 1
+            self.y_direction = y_dir
+            self.speed = 5
+            self.image = pygame.Surface([self.width, self.height])
+            self.image.fill(RED)
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
             
     def update(self):
         #Ball physics
         if self.rect.x > 620:
-            self.reset()
-            scored("player1")
+            if self.ballType == "normal":
+                self.reset()
+                scored("player1")
+                
+            if self.ballType == "shadow":
+                self.speed = 0
 
         if self.rect.x < 0:
-            self.reset()
-            scored("player2")
+            if self.ballType == "normal":
+                self.reset()
+                scored("player2")
+                
+            if self.ballType == "shadow":
+                self.speed = 0
             
         if self.rect.y < 0:
             self.bounce("down")
@@ -278,7 +301,7 @@ wall_group = pygame.sprite.Group()
 #Creating the players
 player1 = Paddle(WHITE, 1)
 player2 = Paddle(WHITE, 2)
-ball = Ball("normal")
+mainBall = Ball("normal")
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -287,8 +310,8 @@ player_group.add(player1)
 all_sprites_group.add(player2)
 #player_group.add(player2) ---Movement is lost when this line is added
 
-all_sprites_group.add(ball)
-ball_group.add(ball)
+all_sprites_group.add(mainBall)
+ball_group.add(mainBall)
 
 #Setting the size of the screen
 screenWidth = 640
@@ -539,21 +562,21 @@ def exampleGameplay():
     global player2Score
 
     #Uses medium difficulty AI
-    global ball
+    global mainBall
     #AI number 1
-    if mediumAI(ball.returnX(), ball.returnY(), player1.returnY(), player1.returnWidth(), "left") == "up":
+    if mediumAI(mainBall.returnX(), mainBall.returnY(), player1.returnY(), player1.returnWidth(), "left") == "up":
         player1.moveY(-6)
-    elif mediumAI(ball.returnX(), ball.returnY(), player1.returnY(), player1.returnWidth(), "left") == "down":
+    elif mediumAI(mainBall.returnX(), mainBall.returnY(), player1.returnY(), player1.returnWidth(), "left") == "down":
         player1.moveY(6)
-    elif mediumAI(ball.returnX(), ball.returnY(), player1.returnY(), player1.returnWidth(), "left") == "none":
+    elif mediumAI(mainBall.returnX(), mainBall.returnY(), player1.returnY(), player1.returnWidth(), "left") == "none":
         player1.moveY(0)
     
     #AI number 2
-    if mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
+    if mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
         player2.moveY(-6)
-    elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
+    elif mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
         player2.moveY(6)
-    elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
+    elif mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
         player2.moveY(0)
     
     #Collision checking
@@ -809,18 +832,18 @@ def mainGame():
             player2.moveY(0)
     elif numberOfPlayers == 1:
         global difficulty
-        global ball
+        global mainBall
         if difficulty == "easy":
             if easyAI(player2.returnY()) == "up":
                 player2.moveY(-6)
             elif easyAI(player2.returnY()) == "down":
                 player2.moveY(6)
         if difficulty == "medium":
-            if mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
+            if mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
                 player2.moveY(-6)
-            elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
+            elif mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
                 player2.moveY(6)
-            elif mediumAI(ball.returnX(), ball.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
+            elif mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
                 player2.moveY(0)
 
     #Spawning powerups
@@ -838,6 +861,12 @@ def mainGame():
         #find and store what direction player 1 is moving
         playerMovement = player1.returnDy()
         ball.changeAngle(playerMovement)
+
+        if ball.ballType == "normal":
+            #create a shadow ball for the "hard AI"
+            shadowBall = Ball("shadow", mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
+            all_sprites_group.add(shadowBall)
+            ball_group.add(shadowBall)
 
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
@@ -875,6 +904,7 @@ def mainGame():
             player1.poweringUp(powerType)
             powerUp_group.remove(powerUp)
             all_sprites_group.remove(powerUp)
+
 
     #Collision checking between powerups FOR PLAYER 2
     for x in player_group:
