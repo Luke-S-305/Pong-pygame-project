@@ -319,6 +319,7 @@ player2 = Paddle(WHITE, 2)
 mainBall = Ball("normal")
 #create a shadow ball for the "hard AI"
 shadowBall = Ball("shadow")
+shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
 
 #Adding the classes to groups
 all_sprites_group.add(player1)
@@ -371,6 +372,7 @@ def scored(player):
         print("player 2 scored!")
         global player2Score
         player2Score += 1
+    shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
 
 #Take in a map to draw and then place blocks
 def drawMap(map):
@@ -937,7 +939,7 @@ def mainGame():
         if x:
             for y in powerUp_hit_group:
                 #Find the direction the ball is travelling in
-                direction = ball.x_direction
+                direction = mainBall.x_direction
                 #Reverse the direction (so the power up travels back from where the ball is coming from)
                 direction = direction * -1
                 powerUp.hit(direction)
