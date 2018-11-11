@@ -233,7 +233,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         #give the shadow ball a head start by a random value between 
-        for i in range(random.randint(15, 25)):
+        for i in range(random.randint(1, 50)):
             self.update()
     
     def reset(self):
@@ -479,7 +479,30 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
                 return "down" #remember y = o at the top of the screen
             else:
                 return "none"
-        
+
+def hardAI(shadowballX,shadowballY,paddleY, paddleWidth, side):
+    #side is which side the paddle is situated on
+    if side == "right":
+        #if the ball is in the latter quarter of the screen
+        if shadowballX > screenWidth * 0.6: #follow ball
+            if shadowballY > paddleY+(paddleWidth/2):
+                return "down" #remember y = o at the top of the screen
+            elif shadowballY < paddleY+(paddleWidth/2):
+                return "up" #remember y = o at the top of the screen
+            else:
+                return "none"
+
+            
+    if side == "left":
+        #if the ball is in the first quarter of the screen
+        if ballX < screenWidth * 0.4: #follow ball
+            if ballY > paddleY+(paddleWidth/2):
+                return "down" #remember y = o at the top of the screen
+            elif ballY < paddleY+(paddleWidth/2):
+                return "up" #remember y = o at the top of the screen
+            else:
+                return "none"
+
     
 
 #the menu select function used to navigate menus
@@ -865,6 +888,13 @@ def mainGame():
                 player2.moveY(6)
             elif mediumAI(mainBall.returnX(), mainBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
                 player2.moveY(0)
+        if difficulty == "hard":
+            if hardAI(shadowBall.returnX(), shadowBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "up":
+                player2.moveY(-6)
+            elif hardAI(shadowBall.returnX(), shadowBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "down":
+                player2.moveY(6)
+            elif hardAI(shadowBall.returnX(), shadowBall.returnY(), player2.returnY(), player2.returnWidth(), "right") == "none":
+                player2.moveY(0)
 
     #Spawning powerups
     spawnChance = random.random()
@@ -877,12 +907,11 @@ def mainGame():
     #Collision checking
     player1_ball_hit_group = pygame.sprite.spritecollide(player1, ball_group, False)
     for ball in player1_ball_hit_group:
-        ball.bounce("right")
-        #find and store what direction player 1 is moving
-        playerMovement = player1.returnDy()
-        ball.changeAngle(playerMovement)
-
         if ball.ballType == "normal":
+            ball.bounce("right")
+            #find and store what direction player 1 is moving
+            playerMovement = player1.returnDy()
+            ball.changeAngle(playerMovement)
             #Reset shadow ball to normal ball position
             shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
 
@@ -890,10 +919,13 @@ def mainGame():
 
     player2_ball_hit_group = pygame.sprite.spritecollide(player2, ball_group, False)
     for ball in player2_ball_hit_group:
-        ball.bounce("left")
-        #find and store what direction player 2 is moving
-        playerMovement = player2.returnDy()
-        ball.changeAngle(playerMovement)
+        if ball.ballType == "normal":
+            ball.bounce("left")
+            #find and store what direction player 2 is moving
+            playerMovement = player2.returnDy()
+            ball.changeAngle(playerMovement)
+            #Reset shadow ball to normal ball position
+            shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
 
 
     #When a ball hits the powerup
