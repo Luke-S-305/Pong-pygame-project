@@ -437,6 +437,12 @@ clock = pygame.time.Clock()
 #drawMap(map3)
 
 #Creating AI players
+def antiJitter(paddleY, ballY, paddleHeight):
+    if ballY >= paddleY and ballY <= paddleY + paddleHeight:
+        return True
+    else:
+        return False
+    
 def easyAI(paddleXLocation):
     global screenHeight
     #probability is the chance that the paddle moves down. It will otherwise move up
@@ -446,21 +452,22 @@ def easyAI(paddleXLocation):
     else:
         return "up"
 
-def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
+def mediumAI(ballX,ballY,paddleY, paddleHeight, side):
     #side is which side the paddle is situated on
     if side == "right":
         #if the ball is in the latter quarter of the screen
         if ballX > screenWidth * 0.8: #follow ball
-            if ballY > paddleY+(paddleWidth/2):
-                return "down" #remember y = o at the top of the screen
-            elif ballY < paddleY+(paddleWidth/2):
-                return "up" #remember y = o at the top of the screen
+            if not antiJitter(paddleY, ballY, paddleHeight): #check if the ball is within the paddle range
+                if ballY > paddleY+(paddleHeight/2):
+                    return "down" #remember y = o at the top of the screen
+                elif ballY < paddleY+(paddleHeight/2):
+                    return "up" #remember y = o at the top of the screen
             else:
                 return "none"
         else: #Move towards middle
-            if paddleY+(paddleWidth/2) > (screenHeight*(3/4)):
+            if paddleY+(paddleHeight/2) > (screenHeight*(3/4)):
                 return "up" #remember y = o at the top of the screen
-            elif paddleY+(paddleWidth/2) < (screenHeight*(1/4)):
+            elif paddleY+(paddleHeight/2) < (screenHeight*(1/4)):
                 return "down" #remember y = o at the top of the screen
             else:
                 return "none"
@@ -468,29 +475,32 @@ def mediumAI(ballX,ballY,paddleY, paddleWidth, side):
     if side == "left":
         #if the ball is in the first quarter of the screen
         if ballX < screenWidth * 0.2: #follow ball
-            if ballY > paddleY+(paddleWidth/2):
-                return "down" #remember y = o at the top of the screen
-            elif ballY < paddleY+(paddleWidth/2):
-                return "up" #remember y = o at the top of the screen
+            if not antiJitter(paddleY, ballY, paddleHeight): #check if the ball is within the paddle range
+                if ballY > paddleY+(paddleHeight/2):
+                    return "down" #remember y = o at the top of the screen
+                elif ballY < paddleY+(paddleHeight/2):
+                    return "up" #remember y = o at the top of the screen
             else:
                 return "none"
         else: #Move towards middle
-            if paddleY+(paddleWidth/2) > (screenHeight*(3/4)):
+            if paddleY+(paddleHeight/2) > (screenHeight*(3/4)):
                 return "up" #remember y = o at the top of the screen
-            elif paddleY+(paddleWidth/2) < (screenHeight*(1/4)):
+            elif paddleY+(paddleHeight/2) < (screenHeight*(1/4)):
                 return "down" #remember y = o at the top of the screen
             else:
                 return "none"
 
-def hardAI(shadowballX,shadowballY,paddleY, paddleWidth, side):
+
+def hardAI(shadowballX,shadowballY,paddleY, paddleHeight, side):
     #side is which side the paddle is situated on
     if side == "right":
         #if the ball is in the latter quarter of the screen
         if shadowballX > screenWidth * 0.6: #follow ball
-            if shadowballY > paddleY+(paddleWidth/2):
-                return "down" #remember y = o at the top of the screen
-            elif shadowballY < paddleY+(paddleWidth/2):
-                return "up" #remember y = o at the top of the screen
+            if not antiJitter(paddleY, shadowballY, paddleHeight): #check if the ball is within the paddle range
+                if shadowballY > paddleY+(paddleHeight/2):
+                    return "down" #remember y = o at the top of the screen
+                elif shadowballY < paddleY+(paddleHeight/2):
+                    return "up" #remember y = o at the top of the screen
             else:
                 return "none"
 
@@ -498,10 +508,11 @@ def hardAI(shadowballX,shadowballY,paddleY, paddleWidth, side):
     if side == "left":
         #if the ball is in the first quarter of the screen
         if ballX < screenWidth * 0.4: #follow ball
-            if ballY > paddleY+(paddleWidth/2):
-                return "down" #remember y = o at the top of the screen
-            elif ballY < paddleY+(paddleWidth/2):
-                return "up" #remember y = o at the top of the screen
+            if not antiJitter(paddleY, shadowballY, paddleHeight): #check if the ball is within the paddle range
+                if ballY > paddleY+(paddleHeight/2):
+                    return "down" #remember y = o at the top of the screen
+                elif ballY < paddleY+(paddleHeight/2):
+                    return "up" #remember y = o at the top of the screen
             else:
                 return "none"
 
