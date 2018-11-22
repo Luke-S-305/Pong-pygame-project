@@ -84,6 +84,7 @@ class Ball(pygame.sprite.Sprite):
         super().__init__()
         #Deciding what type of ball it should be
         self.ballType = ballType
+        self.spinning = False
         if self.ballType == "normal":
             self.width = 20
             self.height = 20
@@ -135,7 +136,18 @@ class Ball(pygame.sprite.Sprite):
             self.bounce("up")
             self.rect.y = 460
 
-        self.getComponents()
+        if not self.spinning: #if the ball is not spinning
+            self.getComponents() #get components as normal
+        else: #when ball is spinning use alternate method INSTEAD of trig and angles
+            if self.spinDamper < self.spinAmount: #if the spin damper is less than the spin amount
+                #Set change in y to a ratio of the amount of spin
+                self.dx = self.x_direction*self.speed*(self.spinDamper/self.spinAmount)
+                #set change in x to the opposite ratio
+                self.dy = self.y_direction*self.speed*((self.spinAmount-self.spinDamper)/self.spinAmount)
+                self.spinDamper += 1
+            else:
+                self.spinning = False
+                self.angle = 0
 
         #First update x direction
         self.rect.x += self.dx
@@ -173,7 +185,9 @@ class Ball(pygame.sprite.Sprite):
         #print(math.sin(self.angle))
 
     def changeAngle(self, movement):
-        if movement < 0:
+        if movement < 0: #if the paddle is moving upwards
+            #make the ball spin
+            self.spin()
             #change angle here
             if self.y_direction == -1:
                 self.angle += 0.3
@@ -187,7 +201,9 @@ class Ball(pygame.sprite.Sprite):
                     self.y_direction = self.y_direction * -1
             #need code for if the ball is going straight
                 
-        if movement > 0:
+        if movement > 0: #if the paddle is moving downwards
+            #make the ball spin
+            self.spin()
             #change angle here
             if self.y_direction == -1:
                 self.angle += -0.3
@@ -212,6 +228,12 @@ class Ball(pygame.sprite.Sprite):
             self.x_direction = -1
         if direction == "right":
             self.x_direction = 1
+
+    def spin(self):
+        self.spinning = True
+        self.spinAmount = 120
+        self.spinDamper = 20
+        
 
     def returnY(self):
         return self.rect.y
