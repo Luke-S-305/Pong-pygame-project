@@ -940,8 +940,14 @@ def mainGame():
     global powerUpInPlay
     global player1Score
     global player2Score
-    #Check keypresses
+    #Check keypresses 
     keys = pygame.key.get_pressed()
+    if keys[pygame.K_p]:
+        global gameStage
+        global pauseBuffer
+        gameStage = "pause menu"
+        pauseBuffer = 0
+    
     plr1KeyPressed = 0 #Checks if a key has been pressed by player 1
     if keys[pygame.K_w] and player1.rect.y > 0:
         player1.moveY(-6)
@@ -1069,13 +1075,40 @@ def mainGame():
 
     #Drawing the sprites
     all_sprites_group.draw(screen)
-    shadowball.blitz(shadowBall)
-    
+  
 
     #Drawing text
     myfont = pygame.font.SysFont("Andale mono", 100)
     textsurface = myfont.render(str(player1Score) + " - " + str(player2Score), False, WHITE)
     screen.blit(textsurface,(270,10))
+
+def pauseMenu():
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+    
+    title = titleFont.render("Pause Menu", False, WHITE)
+    exitText = textFont.render("Press the <p> key to continue", False, RED)
+
+    global pauseBuffer
+    pauseBuffer +=1
+    if pauseBuffer > 5:
+        #Check keypresses
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_p]:
+            #Make sure variables being changed are global
+            global gameStage
+            gameStage = "gameplay"
+        
+    #drawing the text
+    screen.blit(title,(100,10))
+    screen.blit(exitText,(10,250))
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(10)
         
 ###MAIN LOOP
 while not done:
@@ -1103,6 +1136,8 @@ while not done:
         randomMapSelection()
     elif gameStage == "gameplay":
         mainGame()
+    elif gameStage == "pause menu":
+        pauseMenu()
 
     
     #Flip display
