@@ -933,6 +933,7 @@ def fullMapSelection():
 def randomMapSelection():
     mapChosen = random.randint(1,3)
     createMap(mapChosen)
+    global gameStage
     gameStage = "gameplay"
     
 def mainGame():
