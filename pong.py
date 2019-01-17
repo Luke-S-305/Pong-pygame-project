@@ -88,7 +88,7 @@ class Ball(pygame.sprite.Sprite):
         if self.ballType == "normal":
             self.width = 20
             self.height = 20
-            self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
+            self.angle = math.pi * float(decimal.Decimal(random.randrange(15, 25))/100) #generating random decimal between 0.05 and 0.25
             self.x_direction = 1
             self.y_direction = 1
 
@@ -230,7 +230,8 @@ class Ball(pygame.sprite.Sprite):
             self.x_direction = 1
 
     def spin(self):
-        self.spinning = True
+        #Line below can be commented out to remove spin
+        #self.spinning = True
         self.spinAmount = 120
         self.spinDamper = 20
         
@@ -241,7 +242,7 @@ class Ball(pygame.sprite.Sprite):
     def returnX(self):
         return self.rect.x
 
-    def shadowReset(self, angle = -1, x = 0, y = 0, y_dir = 0):
+    def shadowReset(self, angle = -1, x = 0, y = 0, y_dir = 0, spinning = False):
         #make the shadow ball take the data from the main ball
         self.width = 20
         self.height = 20
@@ -254,6 +255,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        if spinning:
+            self.spin()
         #give the shadow ball a head start by a random value between 
         for i in range(random.randint(1, 50)):
             self.update()
@@ -262,7 +265,7 @@ class Ball(pygame.sprite.Sprite):
         #Put the ball back in the middle of the screen
         self.rect.x = 320
         self.rect.y = 240
-        self.angle = math.pi * float(decimal.Decimal(random.randrange(5, 25))/100) #generating random decimal between 0.05 and 0.25
+        self.angle = math.pi * float(decimal.Decimal(random.randrange(15, 25))/100) #generating random decimal between 0.05 and 0.25
         self.x_direction = random.choice([-1, 1])
         self.y_direction = random.choice([-1, 1])
 
@@ -368,7 +371,7 @@ pygame.display.set_caption("Pong")
 #define variables
 player1Score = 0
 player2Score = 0
-powerUpInPlay = 0
+powerUpInPlay = 1
 gameStage = "watch example gameplay select"
 numberOfPlayers = 0
 difficulty = "medium" #Default normal for 2 player
@@ -777,11 +780,13 @@ def difficultySelect():
         global gameStage
         if difficultySelectPointer == 0:
             difficulty = "easy"
+            gameStage = "easy map selection"
         elif difficultySelectPointer == 1:
             difficulty = "medium"
+            gameStage = "full map selection"
         elif difficultySelectPointer == 2:
             difficulty = "hard"
-        gameStage = "gameplay"
+            gameStage = "random map selection"
 
     #drawing the text
     screen.blit(title,(50,10))
@@ -875,8 +880,60 @@ def easyMapSelection():
     clock.tick(10)
 
 def fullMapSelection():
-    print("working")
+    #Display elements
+    screen.fill(BLACK)
+    titleFont = pygame.font.SysFont("Andale mono", 100)
+    textFont = pygame.font.SysFont("Andale mono", 30)
+    optionFont = pygame.font.SysFont("Andale mono", 50)
+
+    #run menu selection function
+    global easyMapSelectionPointer
+    easyMapSelectionPointer = menuSelect(3, easyMapSelectionPointer)
     
+    title = titleFont.render("Select a map", False, WHITE)
+    #logic to determine which option should be highlighted
+    if easyMapSelectionPointer == 0:
+        map1 = optionFont.render("map 1", False, RED)
+        map2 = optionFont.render("map 2", False, WHITE)
+        map3 = optionFont.render("map 3", False, WHITE)
+    elif easyMapSelectionPointer == 1:
+        map1 = optionFont.render("map 1", False, WHITE)
+        map2 = optionFont.render("map 2", False, RED)
+        map3 = optionFont.render("map 3", False, WHITE)
+    elif easyMapSelectionPointer == 2:
+        map1 = optionFont.render("map 1", False, WHITE)
+        map2 = optionFont.render("map 2", False, WHITE)
+        map3 = optionFont.render("map 3", False, RED)
+
+    #Check keypresses
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RETURN]:
+        #Make sure variables being changed are global
+        global gameStage
+        if easyMapSelectionPointer == 0:
+            mapChosen = 1
+        elif easyMapSelectionPointer == 1:
+            mapChosen = 2
+        elif easyMapSelectionPointer == 2:
+            mapChosen = 3
+        createMap(mapChosen)
+        gameStage = "gameplay"
+
+    #drawing the text
+    screen.blit(title,(50,10))
+    screen.blit(map1,(10,200))
+    screen.blit(map2,(200,200))
+    screen.blit(map3,(500,200))
+
+    pygame.display.update()
+
+    #Set clock speed
+    clock.tick(10)
+
+def randomMapSelection():
+    mapChosen = random.randint(1,3)
+    createMap(mapChosen)
+    gameStage = "gameplay"
     
 def mainGame():
     #Ensure global variables are used
@@ -948,7 +1005,7 @@ def mainGame():
             playerMovement = player1.returnDy()
             ball.changeAngle(playerMovement)
             #Reset shadow ball to normal ball position
-            shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
+            shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction, mainBall.spinning)
 
 
 
@@ -960,7 +1017,7 @@ def mainGame():
             playerMovement = player2.returnDy()
             ball.changeAngle(playerMovement)
             #Reset shadow ball to normal ball position
-            shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction)
+            shadowBall.shadowReset(mainBall.angle, mainBall.rect.x, mainBall.rect.y, mainBall.y_direction, mainBall.spinning)
 
 
     #When a ball hits the powerup
@@ -1012,6 +1069,8 @@ def mainGame():
 
     #Drawing the sprites
     all_sprites_group.draw(screen)
+    shadowball.blitz(shadowBall)
+    
 
     #Drawing text
     myfont = pygame.font.SysFont("Andale mono", 100)
@@ -1040,6 +1099,8 @@ while not done:
         easyMapSelection()
     elif gameStage == "full map selection":
         fullMapSelection()
+    elif gameStage == "random map selection":
+        randomMapSelection()
     elif gameStage == "gameplay":
         mainGame()
 
